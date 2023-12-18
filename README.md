@@ -8,4 +8,4 @@ chmod u+x
 ./run.sh
 
 Screenshot
-![alt text](https://github.com/Dorjderem2002/performance-test-balls/edit/main/images/ss.png)
+![alt text]([https://github.com/Dorjderem2002/performance-test-balls/edit/main/images/ss.png](https://github.com/Dorjderem2002/performance-test-balls/blob/main/images/ss.png)https://github.com/Dorjderem2002/performance-test-balls/blob/main/images/ss.png)
