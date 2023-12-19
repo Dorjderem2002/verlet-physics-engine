@@ -5,7 +5,9 @@ HOW TO RUN:
 MACOS
 
 brew install sfml g++
+
 chmod u+x
+
 ./run.sh
 
 Screenshot
