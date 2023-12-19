@@ -3,22 +3,27 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-#include "Ball.h"
+#include "PhysicsBody.hpp"
 
 class World {
 public:
     World();
+    void init();
     void applyGravity();
     void updatePosition(float dt);
     void applyConstraint();
     void resolveCollision();
-    void update(float dt);
+    void update();
     void draw(sf::RenderWindow &window);
+
+    int getBodyCount();
 private:
     sf::Vector2f shooterPos = sf::Vector2f(200,0);
-    int sub_steps = 2;
+    int sub_steps = 8;
+    int objCounter = 0, maxObject = 1000;
     float counter = 0, t = 0;
     float interval = 0.1f;
-    sf::Vector2f gravity = sf::Vector2f(100.0f, 800.0f);
-    std::vector<std::unique_ptr<Ball>> balls;
+    float frame_dt = 0.0f;
+    sf::Vector2f gravity = sf::Vector2f(0.0f, 1000.0f);
+    std::vector<PhysicsBody*> bodies;
 };

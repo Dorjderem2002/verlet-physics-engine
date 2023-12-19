@@ -1,8 +1,6 @@
-#include "Ball.h"
+#include "KinematicBody.hpp"
 
-#include <iostream>
-
-Ball::Ball() {
+KinematicBody::KinematicBody() {
     pos.x = 20;
     pos.y = 20;
     old = pos;
@@ -14,21 +12,21 @@ Ball::Ball() {
     shape.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255, 255));
 }
 
-Ball::Ball(sf::Vector2f p, float radius, sf::Color color)
+KinematicBody::KinematicBody(sf::Vector2f p, float radius, sf::Color color)
 {
     pos = p;
     old = pos;
     r = radius;
     acc = {0,0};
-    shape.setPosition(sf::Vector2f(pos.x, pos.y));
+    shape.setPosition(pos);
     shape.setRadius(r);
     shape.setOrigin(r, r);
     shape.setFillColor(color);
 }
 
-void Ball::update(float dt)
+void KinematicBody::update(float dt)
 {
-    vel = pos - old;
+    sf::Vector2f vel = pos - old;
     old = pos;
     pos = pos + vel + acc * dt * dt;
     acc = {};
@@ -36,23 +34,23 @@ void Ball::update(float dt)
     setPosition(pos);
 }
 
-void Ball::draw(sf::RenderWindow &win)
+void KinematicBody::draw(sf::RenderWindow &win)
 {
     win.draw(shape);
 }
 
-void Ball::accelerate(sf::Vector2f a)
+void KinematicBody::accelerate(sf::Vector2f a)
 {
     acc += a;
 }
 
-bool Ball::isColliding(Ball* target)
+bool KinematicBody::isColliding(PhysicsBody* target)
 {
     sf::Vector2f diff = pos - target->getPosition();
-    return r + target->r > sqrtf(diff.x * diff.x + diff.y * diff.y);
+    return r + target->getRadius() > sqrtf(diff.x * diff.x + diff.y * diff.y);
 }
 
-void Ball::wallCollide(int w, int h)
+void KinematicBody::wallCollide(int w, int h)
 {
     if (pos.y > h - r)
     {
@@ -76,11 +74,11 @@ void Ball::wallCollide(int w, int h)
     }
 }
 
-void Ball::resolveCollision(Ball* target)
+void KinematicBody::resolveCollision(PhysicsBody* target)
 {
     sf::Vector2f diff = pos - target->getPosition();
     float len_diff = sqrtf(diff.x * diff.x + diff.y * diff.y);
-    float len_r = r + target->r;
+    float len_r = r + target->getRadius();
     float d = len_diff - len_r;
 
     sf::Vector2f nVec = diff / len_diff;
@@ -91,13 +89,35 @@ void Ball::resolveCollision(Ball* target)
     target->setPosition(newPos);
 }
 
-void Ball::setPosition(sf::Vector2f newPos)
+void KinematicBody::setPosition(sf::Vector2f newPos)
 {
     pos = newPos;
     shape.setPosition(newPos);
 }
 
-sf::Vector2f Ball::getPosition()
+void KinematicBody::setVelocity(sf::Vector2f v, float dt) 
+{
+    old = pos - (v * dt);
+}
+
+void KinematicBody::addVelocity(sf::Vector2f v, float dt) 
+{
+    old -= (v * dt);
+}
+
+sf::Vector2f KinematicBody::getPosition()
 {
     return pos;
+}
+
+float KinematicBody::getRadius() {
+    return r;
+}
+
+bool KinematicBody::isKinematic() {
+    return true;
+}
+
+KinematicBody::~KinematicBody() {
+    
 }
