@@ -118,6 +118,10 @@ bool KinematicBody::isKinematic() {
     return true;
 }
 
+void KinematicBody::setTexture(sf::Texture* t) {
+    shape.setTexture(t);
+}
+
 KinematicBody::~KinematicBody() {
     
 }

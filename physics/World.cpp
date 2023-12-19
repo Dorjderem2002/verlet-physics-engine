@@ -19,6 +19,9 @@ World::World() {
 }
 
 void World::init() {
+
+    blur.loadFromFile("resource/blur.png");
+
     frame_dt = 1.0f / 60.0f;
 
     //static body init
@@ -46,6 +49,7 @@ void World::update() {
         int tr = 5;
         KinematicBody* tBody = new KinematicBody(shooterPos, rand() % tr + tr, getRainbow(t));
         tBody->setVelocity(sf::Vector2f(rand() % 2000 - 1000,0), sub_dt);
+        tBody->setTexture(&blur);
         bodies.push_back(tBody);
     }
     for (int i = 0; i < sub_steps; i++)

@@ -23,6 +23,8 @@ public:
     bool isKinematic() override;
     ~KinematicBody();
 
+    void setTexture(sf::Texture *t);
+
 private:
     float r;
 	sf::CircleShape shape;
