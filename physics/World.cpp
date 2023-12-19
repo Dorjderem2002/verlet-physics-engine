@@ -84,8 +84,9 @@ void World::applyConstraint()
     }
 }
 void World::resolveCollision() {
-    for(int i=0;i<bodies.size();i++) {
-        for (int j = 0; j < bodies.size(); j++)
+    int numberOfBody = bodies.size();
+    for(int i = 0;i < numberOfBody; i++) {
+        for (int j = i + 1; j < numberOfBody; j++)
         {
             if (i != j && bodies[i]->isColliding(bodies[j]))
             {
