@@ -12,7 +12,8 @@ public:
     void applyGravity();
     void updatePosition(float dt);
     void applyConstraint();
-    void resolveCollision();
+    void resolveCollisionNaive();
+    void resolveCollisionSort();
     void update();
     void draw(sf::RenderWindow &window);
 
@@ -20,10 +21,11 @@ public:
 private:
     sf::Vector2f shooterPos = sf::Vector2f(200,0);
     int sub_steps = 8;
-    int objCounter = 0, maxObject = 3000;
+    int objCounter = 0, maxObject = 500;
     float counter = 0, t = 0;
     float interval = 0.001f;
     float frame_dt = 0.0f;
+    int sortAlgo = 0;
     sf::Vector2f gravity = sf::Vector2f(0.0f, 1000.0f);
     std::vector<PhysicsBody*> bodies;
     sf::Texture blur;

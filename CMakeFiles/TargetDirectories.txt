@@ -1,0 +1,3 @@
+/Users/dorjderem/Developer/cpp/sfml/performance-test-balls/CMakeFiles/main.dir
+/Users/dorjderem/Developer/cpp/sfml/performance-test-balls/CMakeFiles/edit_cache.dir
+/Users/dorjderem/Developer/cpp/sfml/performance-test-balls/CMakeFiles/rebuild_cache.dir

@@ -3,6 +3,7 @@
 #include "StaticBody.hpp"
 
 #include <iostream>
+#include <algorithm>
 
 bool intersect(float x1, float x2, float y1, float y2) {
     float a = std::max(x1, y1);
@@ -11,6 +12,24 @@ bool intersect(float x1, float x2, float y1, float y2) {
         return false;
     }
     return true;
+}
+
+void insertionSort(std::vector<PhysicsBody*> arr, int flag)
+{
+    int n = arr.size();
+    int key, j;
+    for (int i = 1; i < n; i++) {
+        PhysicsBody* obj = arr[i];
+        key = (flag) ? arr[i]->getPosition().x : arr[i]->getPosition().y;
+        j = i - 1;
+        int otherKey = (flag) ? arr[j]->getPosition().x : arr[j]->getPosition().y;
+        while (j >= 0 && otherKey > key) {
+            arr[j + 1] = arr[j];
+            j--;
+            otherKey = (flag) ? arr[j]->getPosition().x : arr[j]->getPosition().y;
+        }
+        arr[j + 1] = obj;
+    }
 }
 
 sf::Color getRainbow(float t)
@@ -51,21 +70,25 @@ void World::update() {
 
     counter += frame_dt;
     t += 0.001f;
-    if(counter > interval && objCounter < maxObject) {
-        counter = 0.0f;
-        objCounter++;
-        shooterPos.x = rand() % 500 + 100;
-        int tr = 5;
-        KinematicBody* tBody = new KinematicBody(shooterPos, rand() % tr + tr, getRainbow(t));
-        tBody->setVelocity(sf::Vector2f(rand() % 2000 - 1000,0), sub_dt);
-        tBody->setTexture(&blur);
-        bodies.push_back(tBody);
+    if(counter > interval && objCounter < maxObject) 
+    {
+        for (int i = 0; i < 2; ++i)
+        {
+            counter = 0.0f;
+            objCounter++;
+            shooterPos.x = rand() % 500 + 100;
+            int tr = 10;
+            KinematicBody* tBody = new KinematicBody(shooterPos, rand() % tr + tr, getRainbow(t));
+            tBody->setVelocity(sf::Vector2f(rand() % 2000 - 1000,0), sub_dt);
+            tBody->setTexture(&blur);
+            bodies.push_back(tBody);
+        }   
     }
     for (int i = 0; i < sub_steps; i++)
     {
         applyGravity();
         applyConstraint();
-        resolveCollision();
+        resolveCollisionSort();
     }
     updatePosition(sub_dt);
 }
@@ -93,60 +116,6 @@ void World::applyConstraint()
     }
 }
 
-void World::resolveCollision() {
-    int numberOfBody = bodies.size();
-    sort(bodies.begin(), bodies.end(), [](PhysicsBody* lhs, PhysicsBody* rhs )
-    {
-       return lhs->getPosition().x < rhs->getPosition().x;
-    });
-    for(int i = 0;i < numberOfBody; i++) {
-        for (int j = i + 1; j < numberOfBody; j++)
-        {
-            float pos_i = bodies[i]->getPosition().x;
-            float pos_j = bodies[j]->getPosition().x;
-            float ri = bodies[i]->getRadius();
-            float rj = bodies[i]->getRadius();
-            if(intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2)) {
-                if (bodies[i]->isColliding(bodies[j]))
-                {
-                    if(!bodies[i]->isKinematic())
-                        bodies[i]->resolveCollision(bodies[j]);
-                    else 
-                        bodies[j]->resolveCollision(bodies[i]);
-                }
-            }
-            else {
-                break;
-            }
-        }
-    }
-    sort(bodies.begin(), bodies.end(), [](PhysicsBody* lhs, PhysicsBody* rhs )
-    {
-       return lhs->getPosition().y < rhs->getPosition().y;
-    });
-    for(int i = 0;i < numberOfBody; i++) {
-        for (int j = i + 1; j < numberOfBody; j++)
-        {
-            float pos_i = bodies[i]->getPosition().x;
-            float pos_j = bodies[j]->getPosition().x;
-            float ri = bodies[i]->getRadius();
-            float rj = bodies[i]->getRadius();
-            if(intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2)) {
-                if (bodies[i]->isColliding(bodies[j]))
-                {
-                    if(!bodies[i]->isKinematic())
-                        bodies[i]->resolveCollision(bodies[j]);
-                    else 
-                        bodies[j]->resolveCollision(bodies[i]);
-                }
-            }
-            else {
-                break;
-            }
-        }
-    }
-}
-
 void World::draw(sf::RenderWindow &window) 
 {
     for (PhysicsBody *b : bodies)
@@ -157,4 +126,94 @@ void World::draw(sf::RenderWindow &window)
 
 int World::getBodyCount() {
     return objCounter;
+}
+
+
+void World::resolveCollisionSort() {
+    int numberOfBody = bodies.size();
+    if(sortAlgo == 0) 
+    {
+        sort(bodies.begin(), bodies.end(), [](PhysicsBody* lhs, PhysicsBody* rhs )
+        {
+           return (lhs->getPosition().x < rhs->getPosition().x);
+        });
+    }
+    else 
+    {
+        insertionSort(bodies, 1);
+    }
+    
+    for(int i = 0;i < numberOfBody; i++) {
+        for (int j = i + 1; j < numberOfBody; j++)
+        {
+            float pos_i = bodies[i]->getPosition().x;
+            float pos_j = bodies[j]->getPosition().x;
+            float ri = bodies[i]->getRadius();
+            float rj = bodies[j]->getRadius();
+            if(intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2)) {
+                if (bodies[i]->isColliding(bodies[j]))
+                {
+                    if(!bodies[i]->isKinematic())
+                        bodies[i]->resolveCollision(bodies[j]);
+                    else 
+                        bodies[j]->resolveCollision(bodies[i]);
+                }
+            }
+            else {
+                break;
+            }
+        }
+    }
+    if(sortAlgo == 0) 
+    {
+        sort(bodies.begin(), bodies.end(), [](PhysicsBody* lhs, PhysicsBody* rhs )
+        {
+           return (lhs->getPosition().y < rhs->getPosition().y);
+        });
+    }
+    else 
+    {
+        insertionSort(bodies, 0);
+    }
+    for(int i = 0;i < numberOfBody; i++) {
+        for (int j = i + 1; j < numberOfBody; j++)
+        {
+            float pos_i = bodies[i]->getPosition().x;
+            float pos_j = bodies[j]->getPosition().x;
+            float ri = bodies[i]->getRadius();
+            float rj = bodies[j]->getRadius();
+            if(intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2)) {
+                if (bodies[i]->isColliding(bodies[j]))
+                {
+                    if(!bodies[i]->isKinematic())
+                        bodies[i]->resolveCollision(bodies[j]);
+                    else 
+                        bodies[j]->resolveCollision(bodies[i]);
+                }
+            }
+            else {
+                break;
+            }
+        }
+    }
+}
+
+void World::resolveCollisionNaive() {
+    int numberOfBody = bodies.size();
+    for(int i = 0;i < numberOfBody; i++) {
+        for (int j = i + 1; j < numberOfBody; j++)
+        {
+            float pos_i = bodies[i]->getPosition().x;
+            float pos_j = bodies[j]->getPosition().x;
+            float ri = bodies[i]->getRadius();
+            float rj = bodies[j]->getRadius();
+            if (bodies[i]->isColliding(bodies[j]))
+            {
+                if(!bodies[i]->isKinematic())
+                    bodies[i]->resolveCollision(bodies[j]);
+                else 
+                    bodies[j]->resolveCollision(bodies[i]);
+            }
+        }
+    }
 }
