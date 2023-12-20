@@ -1,14 +1,34 @@
 Physics simulation Cirlce2Circle
 
-HOW TO RUN:
+10000 objects at 60FPS
 
-MACOS
-
-brew install sfml g++
-
-chmod u+x
-
-./run.sh
+More optimizations coming soon
 
 Screenshot
 ![alt text](images/ss.png)
+
+HOW TO RUN:
+
+MacOS:
+
+brew install sfml g++
+
+mkdir build && cd build
+
+cmake ../
+
+make
+
+Linux:
+
+sudo apt install g++ libsfml-dev
+
+mkdir build && cd build
+
+cmake ../
+
+make
+
+Windows:
+
+Haven't tried but it should work with cmake if u configure sfml correctly
