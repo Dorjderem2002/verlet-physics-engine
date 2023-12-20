@@ -1,5 +1,7 @@
 #include "StaticBody.hpp"
 
+#include <cmath>
+
 StaticBody::StaticBody() {
     shape.setRadius(10.0f);
 }
@@ -29,7 +31,7 @@ void StaticBody::draw(sf::RenderWindow& win) {
 
 bool StaticBody::isColliding(PhysicsBody* target) {
     sf::Vector2f diff = pos - target->getPosition();
-    return r + target->getRadius() > (float)sqrt(diff.x * diff.x + diff.y * diff.y);
+    return r + target->getRadius() > (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
 }
 
 void StaticBody::wallCollide(int w, int h) {
@@ -38,7 +40,7 @@ void StaticBody::wallCollide(int w, int h) {
 
 void StaticBody::resolveCollision(PhysicsBody* target) {
     sf::Vector2f diff = pos - target->getPosition();
-    float len_diff = (float)sqrt(diff.x * diff.x + diff.y * diff.y);
+    float len_diff = (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
     float len_r = r + target->getRadius();
     float d = len_diff - len_r;
     sf::Vector2f nVec = diff / len_diff;

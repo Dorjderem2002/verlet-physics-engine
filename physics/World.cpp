@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 
 bool intersect(float x1, float x2, float y1, float y2) {
     float a = std::max(x1, y1);
@@ -34,9 +35,9 @@ void insertionSort(std::vector<PhysicsBody*> arr, int flag)
 
 sf::Color getRainbow(float t)
 {
-    const float r = sin(t);
-    const float g = sin(t + 0.33f * 2.0f * 3.142f);
-    const float b = sin(t + 0.66f * 2.0f * 3.142f);
+    const float r = std::sin(t);
+    const float g = std::sin(t + 0.33f * 2.0f * 3.142f);
+    const float b = std::sin(t + 0.66f * 2.0f * 3.142f);
     return {static_cast<uint8_t>(255.0f * r * r),
             static_cast<uint8_t>(255.0f * g * g),
             static_cast<uint8_t>(255.0f * b * b)};
