@@ -4,7 +4,7 @@ project(MyProject)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(SFML 2.5 COMPONENTS graphics system window REQUIRED)
+find_package(SFML 2.6.1 COMPONENTS graphics system window REQUIRED)
 
 file(GLOB SOURCES "*.cpp" "physics/*.cpp")
 
