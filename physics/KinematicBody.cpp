@@ -49,7 +49,7 @@ void KinematicBody::accelerate(sf::Vector2f a)
 bool KinematicBody::isColliding(PhysicsBody* target)
 {
     sf::Vector2f diff = pos - target->getPosition();
-    return r + target->getRadius() > sqrtf(diff.x * diff.x + diff.y * diff.y);
+    return r + target->getRadius() > sqrt(diff.x * diff.x + diff.y * diff.y);
 }
 
 void KinematicBody::wallCollide(int w, int h)
@@ -79,7 +79,7 @@ void KinematicBody::wallCollide(int w, int h)
 void KinematicBody::resolveCollision(PhysicsBody* target)
 {
     sf::Vector2f diff = pos - target->getPosition();
-    float len_diff = sqrtf(diff.x * diff.x + diff.y * diff.y);
+    float len_diff = sqrt(diff.x * diff.x + diff.y * diff.y);
     float len_r = r + target->getRadius();
     float d = len_diff - len_r;
 
