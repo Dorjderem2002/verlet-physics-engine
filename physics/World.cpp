@@ -78,7 +78,7 @@ void World::update() {
             counter = 0.0f;
             objCounter++;
             shooterPos.x = rand() % 500 + 100;
-            int tr = 10;
+            int tr = 3;
             KinematicBody* tBody = new KinematicBody(shooterPos, rand() % tr + tr, getRainbow(t));
             tBody->setVelocity(sf::Vector2f(rand() % 2000 - 1000,0), sub_dt);
             tBody->setTexture(&blur);
