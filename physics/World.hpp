@@ -20,7 +20,7 @@ public:
     int getBodyCount();
 private:
     sf::Vector2f shooterPos = sf::Vector2f(200,0);
-    int sub_steps = 4;
+    int sub_steps = 5;
     int objCounter = 0, maxObject = 10000;
     float counter = 0, t = 0;
     float interval = 0.001f;

@@ -204,10 +204,6 @@ void World::resolveCollisionNaive() {
     for(int i = 0;i < numberOfBody; i++) {
         for (int j = i + 1; j < numberOfBody; j++)
         {
-            float pos_i = bodies[i]->getPosition().x;
-            float pos_j = bodies[j]->getPosition().x;
-            float ri = bodies[i]->getRadius();
-            float rj = bodies[j]->getRadius();
             if (bodies[i]->isColliding(bodies[j]))
             {
                 if(!bodies[i]->isKinematic())
