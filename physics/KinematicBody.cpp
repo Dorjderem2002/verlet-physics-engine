@@ -9,7 +9,8 @@ KinematicBody::KinematicBody() {
     r = 10;
     acc = {0,0};
     shape.setPosition(sf::Vector2f(pos.x, pos.y));
-    shape.setRadius(r);
+    // shape.setRadius(r);
+    shape.setSize(sf::Vector2f(r * 2, r * 2));
     shape.setOrigin(r, r);
     shape.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255, 255));
 }
@@ -21,7 +22,8 @@ KinematicBody::KinematicBody(sf::Vector2f p, float radius, sf::Color color)
     r = radius;
     acc = {0,0};
     shape.setPosition(pos);
-    shape.setRadius(r);
+    // shape.setRadius(r);
+    shape.setSize(sf::Vector2f(r * 2, r * 2));
     shape.setOrigin(r, r);
     shape.setFillColor(color);
 }

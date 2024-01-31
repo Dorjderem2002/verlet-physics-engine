@@ -37,23 +37,32 @@ World::World()
 void World::init()
 {
 
-    blur.loadFromFile("resource/blur.png");
+    blur.loadFromFile("resource/circle.png");
 
     frame_dt = 1.0f / 60.0f;
 
     bodies.reserve(10000);
 
     // static body init
-    //  float tr = 20.0f;
-    //  for(int i=0;i<5;i++) {
-    //      bodies.push_back(new StaticBody(sf::Vector2f(200 + i * tr * 2.0f, 300 - i * tr), tr));
-    //  }
-    //  for(int i=0;i<5;i++) {
-    //      bodies.push_back(new StaticBody(sf::Vector2f(250 - i * tr * 2.0f, 600 - i * tr), tr));
-    //  }
-    //  for(int i=0;i<5;i++) {
-    //      bodies.push_back(new StaticBody(sf::Vector2f(500 + i * tr * 2.0f, 500), tr));
-    //  }
+    float tr = ballRadius;
+    for (int i = 0; i < 5; i++)
+    {
+        StaticBody *staticTemp = new StaticBody(sf::Vector2f(200 + i * tr * 2.0f, 300 - i * tr), tr);
+        staticTemp->setTexture(&blur);
+        bodies.push_back(staticTemp);
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        StaticBody *staticTemp = new StaticBody(sf::Vector2f(250 - i * tr * 2.0f, 600 - i * tr), tr);
+        staticTemp->setTexture(&blur);
+        bodies.push_back(staticTemp);
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        StaticBody *staticTemp = new StaticBody(sf::Vector2f(500 + i * tr * 2.0f, 500), tr);
+        staticTemp->setTexture(&blur);
+        bodies.push_back(staticTemp);
+    }
 }
 
 void World::update()
@@ -213,7 +222,7 @@ void World::resolveCollisionGrid()
         sf::Vector2f pos = bodies[i]->getPosition();
         int y = pos.y / diameter;
         int x = pos.x / diameter;
-        grid[y+1][x+1].push_back(i);
+        grid[y + 1][x + 1].push_back(i);
     }
 
     for (int i = 1; i < gridHeight - 1; i++)

@@ -3,19 +3,22 @@
 #include <cmath>
 
 StaticBody::StaticBody() {
-    shape.setRadius(10.0f);
+    // shape.setRadius(10.0f);
+    shape.setSize(sf::Vector2f(10,10));
 }
 
 StaticBody::StaticBody(float radius) {
     r = radius;
-    shape.setRadius(r);
+    // shape.setRadius(r);
+    shape.setSize(sf::Vector2f(r * 2,r * 2));
     shape.setFillColor(sf::Color::White);
     shape.setOrigin(r, r);
     shape.setPosition(0,0);
 }
 StaticBody::StaticBody(sf::Vector2f p, float radius) {
     r = radius;
-    shape.setRadius(r);
+    // shape.setRadius(r);
+    shape.setSize(sf::Vector2f(r * 2,r * 2));
     shape.setFillColor(sf::Color::White);
     shape.setOrigin(r, r);
     setPosition(p);
@@ -75,6 +78,11 @@ float StaticBody::getRadius() {
 
 bool StaticBody::isKinematic() {
     return false;
+}
+
+void StaticBody::setTexture(sf::Texture *t)
+{
+    shape.setTexture(t);
 }
 
 StaticBody::~StaticBody() {

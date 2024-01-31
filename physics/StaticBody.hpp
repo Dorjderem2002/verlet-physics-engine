@@ -20,9 +20,11 @@ public:
     sf::Vector2f getPosition() override;
     float getRadius() override;
     bool isKinematic() override;
+
+    void setTexture(sf::Texture *t);
     ~StaticBody();
 private:
-    sf::CircleShape shape;
+    sf::RectangleShape shape;
     sf::Vector2f pos;
     float r;
 };

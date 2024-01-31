@@ -27,7 +27,7 @@ public:
 
 private:
     float r;
-	sf::CircleShape shape;
+	sf::RectangleShape shape;
 	sf::Vector2f pos, old;
 	sf::Vector2f acc;
 };

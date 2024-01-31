@@ -25,7 +25,7 @@ private:
     int winHeight = 800;
     sf::Vector2f shooterPos = sf::Vector2f(200,0);
     int sub_steps = 6;
-    int ballRadius = 4;
+    int ballRadius = 5;
     int objCounter = 0, maxObject = 10000;
     float counter = 0, t = 0;
     float interval = 0.001f;
