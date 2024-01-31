@@ -6,31 +6,18 @@
 #include <algorithm>
 #include <cmath>
 
-bool intersect(float x1, float x2, float y1, float y2) {
+#define triple_vector std::vector<std::vector<std::vector<int>>>
+#define double_vector std::vector<std::vector<int>>
+
+bool intersect(float x1, float x2, float y1, float y2)
+{
     float a = std::max(x1, y1);
     float b = std::min(x2, y2);
-    if(a > b) {
+    if (a > b)
+    {
         return false;
     }
     return true;
-}
-
-void insertionSort(std::vector<PhysicsBody*> arr, int flag)
-{
-    int n = arr.size();
-    int key, j;
-    for (int i = 1; i < n; i++) {
-        PhysicsBody* obj = arr[i];
-        key = (flag) ? arr[i]->getPosition().x : arr[i]->getPosition().y;
-        j = i - 1;
-        int otherKey = (flag) ? arr[j]->getPosition().x : arr[j]->getPosition().y;
-        while (j >= 0 && otherKey > key) {
-            arr[j + 1] = arr[j];
-            j--;
-            otherKey = (flag) ? arr[j]->getPosition().x : arr[j]->getPosition().y;
-        }
-        arr[j + 1] = obj;
-    }
 }
 
 sf::Color getRainbow(float t)
@@ -43,81 +30,87 @@ sf::Color getRainbow(float t)
             static_cast<uint8_t>(255.0f * b * b)};
 }
 
-World::World() {
-
+World::World()
+{
 }
 
-void World::init() {
+void World::init()
+{
 
     blur.loadFromFile("resource/blur.png");
 
     frame_dt = 1.0f / 60.0f;
 
-    //static body init
-    // float tr = 20.0f;
-    // for(int i=0;i<5;i++) {
-    //     bodies.push_back(new StaticBody(sf::Vector2f(200 + i * tr * 2.0f, 300 - i * tr), tr));
-    // }
-    // for(int i=0;i<5;i++) {
-    //     bodies.push_back(new StaticBody(sf::Vector2f(250 - i * tr * 2.0f, 600 - i * tr), tr));
-    // }
-    // for(int i=0;i<5;i++) {
-    //     bodies.push_back(new StaticBody(sf::Vector2f(500 + i * tr * 2.0f, 500), tr));
-    // }
+    bodies.reserve(10000);
+
+    // static body init
+    //  float tr = 20.0f;
+    //  for(int i=0;i<5;i++) {
+    //      bodies.push_back(new StaticBody(sf::Vector2f(200 + i * tr * 2.0f, 300 - i * tr), tr));
+    //  }
+    //  for(int i=0;i<5;i++) {
+    //      bodies.push_back(new StaticBody(sf::Vector2f(250 - i * tr * 2.0f, 600 - i * tr), tr));
+    //  }
+    //  for(int i=0;i<5;i++) {
+    //      bodies.push_back(new StaticBody(sf::Vector2f(500 + i * tr * 2.0f, 500), tr));
+    //  }
 }
 
-void World::update() {
+void World::update()
+{
     float sub_dt = frame_dt / (float)sub_steps;
 
     counter += frame_dt;
     t += 0.001f;
-    if(counter > interval && objCounter < maxObject) 
+    if (counter > interval && objCounter < maxObject)
     {
         for (int i = 0; i < 2; ++i)
         {
             counter = 0.0f;
             objCounter++;
             shooterPos.x = rand() % 500 + 100;
-            int tr = 3;
-            KinematicBody* tBody = new KinematicBody(shooterPos, rand() % tr + tr, getRainbow(t));
-            tBody->setVelocity(sf::Vector2f(rand() % 2000 - 1000,0), sub_dt);
+            KinematicBody *tBody = new KinematicBody(shooterPos, ballRadius, getRainbow(t));
+            tBody->setVelocity(sf::Vector2f(rand() % 2000 - 1000, 0), sub_dt);
             tBody->setTexture(&blur);
             bodies.push_back(tBody);
-        }   
+        }
     }
     for (int i = 0; i < sub_steps; i++)
     {
         applyGravity();
         applyConstraint();
-        resolveCollisionSort();
+        // resolveCollisionSort();
+        // resolveCollisionNaive();
+        resolveCollisionGrid();
     }
     updatePosition(sub_dt);
 }
 
-void World::applyGravity() {
-    for(PhysicsBody *b : bodies)
+void World::applyGravity()
+{
+    for (PhysicsBody *b : bodies)
     {
         b->accelerate(gravity);
     }
 }
 
-void World::updatePosition(float dt) 
+void World::updatePosition(float dt)
 {
-    for(PhysicsBody *b : bodies) 
+    for (PhysicsBody *b : bodies)
     {
         b->update(dt);
     }
 }
 
-void World::applyConstraint() 
+void World::applyConstraint()
 {
-    for(PhysicsBody *b : bodies) 
+    for (PhysicsBody *b : bodies)
     {
         b->wallCollide(800, 800);
     }
 }
 
-void World::draw(sf::RenderWindow &window) 
+void World::draw(sf::RenderWindow &window)
 {
     for (PhysicsBody *b : bodies)
     {
@@ -125,91 +118,131 @@ void World::draw(sf::RenderWindow &window)
     }
 }
 
-int World::getBodyCount() {
+int World::getBodyCount()
+{
     return objCounter;
 }
 
-
-void World::resolveCollisionSort() {
+void World::resolveCollisionSort()
+{
     int numberOfBody = bodies.size();
-    if(sortAlgo == 0) 
+    sort(bodies.begin(), bodies.end(), [](PhysicsBody *lhs, PhysicsBody *rhs)
+         { return (lhs->getPosition().x < rhs->getPosition().x); });
+
+    for (int i = 0; i < numberOfBody; i++)
     {
-        sort(bodies.begin(), bodies.end(), [](PhysicsBody* lhs, PhysicsBody* rhs )
-        {
-           return (lhs->getPosition().x < rhs->getPosition().x);
-        });
-    }
-    else 
-    {
-        insertionSort(bodies, 1);
-    }
-    
-    for(int i = 0;i < numberOfBody; i++) {
         for (int j = i + 1; j < numberOfBody; j++)
         {
             float pos_i = bodies[i]->getPosition().x;
             float pos_j = bodies[j]->getPosition().x;
             float ri = bodies[i]->getRadius();
             float rj = bodies[j]->getRadius();
-            if(intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2)) {
+            if (intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2))
+            {
                 if (bodies[i]->isColliding(bodies[j]))
                 {
-                    if(!bodies[i]->isKinematic())
+                    if (!bodies[i]->isKinematic())
                         bodies[i]->resolveCollision(bodies[j]);
-                    else 
+                    else
                         bodies[j]->resolveCollision(bodies[i]);
                 }
             }
-            else {
+            else
+            {
                 break;
             }
         }
     }
-    if(sortAlgo == 0) 
+    sort(bodies.begin(), bodies.end(), [](PhysicsBody *lhs, PhysicsBody *rhs)
+         { return (lhs->getPosition().y < rhs->getPosition().y); });
+    for (int i = 0; i < numberOfBody; i++)
     {
-        sort(bodies.begin(), bodies.end(), [](PhysicsBody* lhs, PhysicsBody* rhs )
-        {
-           return (lhs->getPosition().y < rhs->getPosition().y);
-        });
-    }
-    else 
-    {
-        insertionSort(bodies, 0);
-    }
-    for(int i = 0;i < numberOfBody; i++) {
         for (int j = i + 1; j < numberOfBody; j++)
         {
             float pos_i = bodies[i]->getPosition().x;
             float pos_j = bodies[j]->getPosition().x;
             float ri = bodies[i]->getRadius();
             float rj = bodies[j]->getRadius();
-            if(intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2)) {
+            if (intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2))
+            {
                 if (bodies[i]->isColliding(bodies[j]))
                 {
-                    if(!bodies[i]->isKinematic())
+                    if (!bodies[i]->isKinematic())
                         bodies[i]->resolveCollision(bodies[j]);
-                    else 
+                    else
                         bodies[j]->resolveCollision(bodies[i]);
                 }
             }
-            else {
+            else
+            {
                 break;
             }
         }
     }
 }
 
-void World::resolveCollisionNaive() {
+void World::resolveCollisionNaive()
+{
     int numberOfBody = bodies.size();
-    for(int i = 0;i < numberOfBody; i++) {
+    for (int i = 0; i < numberOfBody; i++)
+    {
         for (int j = i + 1; j < numberOfBody; j++)
         {
             if (bodies[i]->isColliding(bodies[j]))
             {
-                if(!bodies[i]->isKinematic())
+                if (!bodies[i]->isKinematic())
                     bodies[i]->resolveCollision(bodies[j]);
-                else 
+                else
                     bodies[j]->resolveCollision(bodies[i]);
+            }
+        }
+    }
+}
+
+void World::resolveCollisionGrid()
+{
+    int numberOfBody = bodies.size();
+    int diameter = ballRadius * 2;
+    int gridWidth = winWidth / diameter + 2;
+    int gridHeight = winHeight / diameter + 2;
+
+    triple_vector grid(gridHeight, double_vector(gridWidth));
+
+    for (int i = 0; i < numberOfBody; i++)
+    {
+        sf::Vector2f pos = bodies[i]->getPosition();
+        int y = pos.y / diameter;
+        int x = pos.x / diameter;
+        grid[y+1][x+1].push_back(i);
+    }
+
+    for (int i = 1; i < gridHeight - 1; i++)
+    {
+        for (int j = 1; j < gridWidth - 1; j++)
+        {
+            for (int k : grid[i][j])
+            {
+                handleLocalGridCollision(grid, k, i, j);
+            }
+        }
+    }
+}
+
+void World::handleLocalGridCollision(triple_vector &grid, int k, int y, int x)
+{
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            for (int h : grid[y + i][x + j])
+            {
+                if (k != h && bodies[k]->isColliding(bodies[h]))
+                {
+                    if (!bodies[k]->isKinematic())
+                        bodies[k]->resolveCollision(bodies[h]);
+                    else
+                        bodies[h]->resolveCollision(bodies[k]);
+                }
             }
         }
     }

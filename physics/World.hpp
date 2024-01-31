@@ -14,18 +14,22 @@ public:
     void applyConstraint();
     void resolveCollisionNaive();
     void resolveCollisionSort();
+    void resolveCollisionGrid();
+    void handleLocalGridCollision(std::vector<std::vector<std::vector<int>>> &grid, int k, int y, int x);
     void update();
     void draw(sf::RenderWindow &window);
 
     int getBodyCount();
 private:
+    int winWidth = 800;
+    int winHeight = 800;
     sf::Vector2f shooterPos = sf::Vector2f(200,0);
-    int sub_steps = 5;
+    int sub_steps = 6;
+    int ballRadius = 4;
     int objCounter = 0, maxObject = 10000;
     float counter = 0, t = 0;
     float interval = 0.001f;
     float frame_dt = 0.0f;
-    int sortAlgo = 0;
     sf::Vector2f gravity = sf::Vector2f(0.0f, 1000.0f);
     std::vector<PhysicsBody*> bodies;
     sf::Texture blur;

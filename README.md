@@ -4,6 +4,12 @@ Physics simulation Cirlce2Circle
 
 More optimizations coming soon
 
+Collision handler algorithms
+
+- Naive O(n^2)
+- Sorting O(n * log(n))
+- Grid O(n * m)
+
 Screenshot
 ![alt text](images/ss.png)
 
