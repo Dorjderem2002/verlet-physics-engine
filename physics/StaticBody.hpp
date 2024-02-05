@@ -20,6 +20,7 @@ public:
     sf::Vector2f getPosition() override;
     float getRadius() override;
     bool isKinematic() override;
+    sf::Color getColor() override;
 
     void setTexture(sf::Texture *t);
     ~StaticBody();

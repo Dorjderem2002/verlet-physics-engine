@@ -19,7 +19,7 @@ public:
     void resolveCollisionSort();
     void resolveCollisionGrid();
     void resolveCollisionGrid(int start, int end);
-    void handleLocalGridCollision(std::vector<std::vector<std::vector<int>>> &grid, int k, int y, int x);
+    void handleLocalGridCollision(int k, int y, int x);
     void update();
     void draw(sf::RenderWindow &window);
 
@@ -30,14 +30,15 @@ private:
     int winHeight = 800;
     sf::Vector2f shooterPos = sf::Vector2f(200,0);
     int sub_steps = 6;
-    int ballRadius = 4;
-    int objCounter = 0, maxObject = 10000;
+    int ballRadius = 3;
+    int objCounter = 0, maxObject = 20000;
     float counter = 0, t = 0;
     float interval = 0.001f;
     float frame_dt = 0.0f;
     sf::Vector2f gravity = sf::Vector2f(0.0f, 1000.0f);
     std::vector<PhysicsBody*> bodies;
     sf::Texture blur;
+    
 
     int gridWidth, gridHeight;
     triple_vector grid;

@@ -122,6 +122,11 @@ bool KinematicBody::isKinematic() {
     return true;
 }
 
+sf::Color KinematicBody::getColor()
+{
+    return shape.getFillColor();
+}
+
 void KinematicBody::setTexture(sf::Texture* t) {
     shape.setTexture(t);
 }

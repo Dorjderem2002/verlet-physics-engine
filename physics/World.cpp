@@ -111,16 +111,18 @@ void World::update()
             grid[y + 1][x + 1].push_back(i);
         }
 
-        resolveCollisionGrid();
+        // resolveCollisionGrid();
 
-        // int n = bodies.size();
-        // std::thread left([this, n]
-        //                  { this->resolveCollisionGrid(0, n / 2); });
-        // std::thread right([this, n]
-        //                   { this->resolveCollisionGrid(n / 2, n); });
+        std::thread left([this]
+                         { this->resolveCollisionGrid(1, gridWidth / 3 + 1); });
+        std::thread mid([this]
+                         { this->resolveCollisionGrid(gridWidth / 3, gridWidth / 3 * 2 + 1); });
+        std::thread right([this]
+                          { this->resolveCollisionGrid(gridWidth / 3 * 2, gridWidth); });
 
-        // left.join();
-        // right.join();
+        left.join();
+        mid.join();
+        right.join();
     }
     updatePosition(sub_dt);
 }
@@ -151,10 +153,34 @@ void World::applyConstraint()
 
 void World::draw(sf::RenderWindow &window)
 {
-    for (PhysicsBody *b : bodies)
+    sf::VertexArray vertices;
+    vertices.resize(4 * bodies.size());
+    vertices.setPrimitiveType(sf::Quads);
+    for (int i = 0; i < bodies.size(); ++i)
     {
-        b->draw(window);
+        int x = bodies[i]->getPosition().x - ballRadius;
+        int y = bodies[i]->getPosition().y - ballRadius;
+        int r = ballRadius * 2;
+        // Define the position and texture coordinates for each vertex
+        sf::Vertex topLeft(sf::Vector2f(x, y), bodies[i]->getColor());
+        sf::Vertex topRight(sf::Vector2f(x + r, y), bodies[i]->getColor());
+        sf::Vertex bottomRight(sf::Vector2f(x + r, y + r), bodies[i]->getColor());
+        sf::Vertex bottomLeft(sf::Vector2f(x, y + r), bodies[i]->getColor());
+        topLeft.texCoords = sf::Vector2f(0.0f, 0.0f);
+        topRight.texCoords = sf::Vector2f(blur.getSize().x, 0.0f);
+        bottomRight.texCoords = sf::Vector2f(blur.getSize().x, blur.getSize().y);
+        bottomLeft.texCoords = sf::Vector2f(0.0f, blur.getSize().y);
+        vertices[4 * i] = topLeft;
+        vertices[4 * i + 1] = topRight;
+        vertices[4 * i + 2] = bottomRight;
+        vertices[4 * i + 3] = bottomLeft;
     }
+    // old slow code
+    // for (PhysicsBody *b : bodies)
+    // {
+    //     b->draw(window);
+    // }
+    // window.draw(vertices, &blur);
 }
 
 int World::getBodyCount()
@@ -251,7 +277,7 @@ void World::resolveCollisionGrid()
         {
             for (int k : grid[i][j])
             {
-                handleLocalGridCollision(grid, k, i, j);
+                handleLocalGridCollision(k, i, j);
             }
         }
     }
@@ -261,17 +287,17 @@ void World::resolveCollisionGrid(int start, int end)
 {
     for (int i = 1; i < gridHeight - 1; i++)
     {
-        for (int j = 1; j < gridWidth - 1; j++)
+        for (int j = start; j < end - 1; j++)
         {
             for (int k : grid[i][j])
             {
-                handleLocalGridCollision(grid, k, i, j);
+                handleLocalGridCollision(k, i, j);
             }
         }
     }
 }
 
-void World::handleLocalGridCollision(triple_vector &grid, int k, int y, int x)
+void World::handleLocalGridCollision(int k, int y, int x)
 {
     for (int i = -1; i <= 1; i++)
     {

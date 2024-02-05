@@ -21,7 +21,9 @@ public:
 	sf::Vector2f getPosition() override;
     float getRadius() override;
     bool isKinematic() override;
+    sf::Color getColor() override;
     ~KinematicBody();
+
 
     void setTexture(sf::Texture *t);
 

@@ -56,6 +56,8 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "algorithm": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "memory": "cpp",
+        "functional": "cpp"
     }
 }
