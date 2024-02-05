@@ -1,6 +1,6 @@
-Physics simulation Cirlce2Circle
+### Physics simulation Cirlce2Circle
 
-10000 objects at 60FPS
+10000 objects at 80FPS
 
 More optimizations coming soon
 
@@ -16,25 +16,37 @@ Screenshot
 HOW TO RUN:
 
 MacOS:
-
+```
 brew install sfml g++
-
+```
+```
 mkdir build && cd build
-
-cmake ../
-
-make
-
+```
+```
+cmake ../ && make
+```
+```
+cp -R ../resource/ ./resource
+```
+```
+./main
+```
 Linux:
-
+```
 sudo apt install g++ libsfml-dev
-
+```
+```
 mkdir build && cd build
-
-cmake ../
-
-make
-
+```
+```
+cmake ../ && make
+```
+```
+cp -R ../resource/ ./resource       
+```
+```
+./main
+```
 Windows:
 
 Haven't tried but it should work with cmake if u configure sfml correctly

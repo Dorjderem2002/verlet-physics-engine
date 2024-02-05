@@ -27,6 +27,7 @@ int main()
     // Physics
     World world;
     world.init();
+    world.setSubStep(5);
 
     while (window.isOpen())
     {

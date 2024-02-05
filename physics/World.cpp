@@ -5,6 +5,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <thread>
 
 #define triple_vector std::vector<std::vector<std::vector<int>>>
 #define double_vector std::vector<std::vector<int>>
@@ -44,25 +45,30 @@ void World::init()
     bodies.reserve(10000);
 
     // static body init
-    float tr = ballRadius;
-    for (int i = 0; i < 5; i++)
-    {
-        StaticBody *staticTemp = new StaticBody(sf::Vector2f(200 + i * tr * 2.0f, 300 - i * tr), tr);
-        staticTemp->setTexture(&blur);
-        bodies.push_back(staticTemp);
-    }
-    for (int i = 0; i < 5; i++)
-    {
-        StaticBody *staticTemp = new StaticBody(sf::Vector2f(250 - i * tr * 2.0f, 600 - i * tr), tr);
-        staticTemp->setTexture(&blur);
-        bodies.push_back(staticTemp);
-    }
-    for (int i = 0; i < 5; i++)
-    {
-        StaticBody *staticTemp = new StaticBody(sf::Vector2f(500 + i * tr * 2.0f, 500), tr);
-        staticTemp->setTexture(&blur);
-        bodies.push_back(staticTemp);
-    }
+    // float tr = ballRadius;
+    // for (int i = 0; i < 5; i++)
+    // {
+    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(200 + i * tr * 2.0f, 300 - i * tr), tr);
+    //     staticTemp->setTexture(&blur);
+    //     bodies.push_back(staticTemp);
+    // }
+    // for (int i = 0; i < 5; i++)
+    // {
+    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(250 - i * tr * 2.0f, 600 - i * tr), tr);
+    //     staticTemp->setTexture(&blur);
+    //     bodies.push_back(staticTemp);
+    // }
+    // for (int i = 0; i < 5; i++)
+    // {
+    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(500 + i * tr * 2.0f, 500), tr);
+    //     staticTemp->setTexture(&blur);
+    //     bodies.push_back(staticTemp);
+    // }
+
+    int diameter = ballRadius * 2;
+    gridWidth = winWidth / diameter + 2;
+    gridHeight = winHeight / diameter + 2;
+    grid = triple_vector(gridHeight, double_vector(gridWidth));
 }
 
 void World::update()
@@ -90,7 +96,31 @@ void World::update()
         applyConstraint();
         // resolveCollisionSort();
         // resolveCollisionNaive();
+
+        int diameter = ballRadius * 2;
+        int numberOfBody = bodies.size();
+        for (int i = 0; i < gridHeight; i++)
+            for (int j = 0; j < gridWidth; j++)
+                grid[i][j].clear();
+
+        for (int i = 0; i < numberOfBody; i++)
+        {
+            sf::Vector2f pos = bodies[i]->getPosition();
+            int y = pos.y / diameter;
+            int x = pos.x / diameter;
+            grid[y + 1][x + 1].push_back(i);
+        }
+
         resolveCollisionGrid();
+
+        // int n = bodies.size();
+        // std::thread left([this, n]
+        //                  { this->resolveCollisionGrid(0, n / 2); });
+        // std::thread right([this, n]
+        //                   { this->resolveCollisionGrid(n / 2, n); });
+
+        // left.join();
+        // right.join();
     }
     updatePosition(sub_dt);
 }
@@ -130,6 +160,11 @@ void World::draw(sf::RenderWindow &window)
 int World::getBodyCount()
 {
     return objCounter;
+}
+
+void World::setSubStep(int count)
+{
+    sub_steps = count;
 }
 
 void World::resolveCollisionSort()
@@ -210,21 +245,20 @@ void World::resolveCollisionNaive()
 
 void World::resolveCollisionGrid()
 {
-    int numberOfBody = bodies.size();
-    int diameter = ballRadius * 2;
-    int gridWidth = winWidth / diameter + 2;
-    int gridHeight = winHeight / diameter + 2;
-
-    triple_vector grid(gridHeight, double_vector(gridWidth));
-
-    for (int i = 0; i < numberOfBody; i++)
+    for (int i = 1; i < gridHeight - 1; i++)
     {
-        sf::Vector2f pos = bodies[i]->getPosition();
-        int y = pos.y / diameter;
-        int x = pos.x / diameter;
-        grid[y + 1][x + 1].push_back(i);
+        for (int j = 1; j < gridWidth - 1; j++)
+        {
+            for (int k : grid[i][j])
+            {
+                handleLocalGridCollision(grid, k, i, j);
+            }
+        }
     }
+}
 
+void World::resolveCollisionGrid(int start, int end)
+{
     for (int i = 1; i < gridHeight - 1; i++)
     {
         for (int j = 1; j < gridWidth - 1; j++)
