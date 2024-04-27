@@ -82,7 +82,7 @@ bool StaticBody::isKinematic() {
 
 sf::Color StaticBody::getColor()
 {
-    return sf::Color();
+    return sf::Color(255, 255, 255, 255);
 }
 
 void StaticBody::setTexture(sf::Texture *t)

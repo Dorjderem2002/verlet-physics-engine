@@ -11,7 +11,7 @@ int main()
     sf::ContextSettings settings;
     // settings.antialiasingLevel = 16.0;
     sf::RenderWindow window(sf::VideoMode(800, 800), "Performance balls", sf::Style::Default, settings);
-    sf::View view(sf::FloatRect(0, 0, 800, 800));
+    sf::View view(sf::FloatRect(-1000, -1000, 10000, 10000));
     // window.setFramerateLimit(60);
     window.setView(view);
     sf::Clock dtClock;
@@ -22,14 +22,18 @@ int main()
     sf::Text text;
     text.setFont(font);
     text.setFillColor(sf::Color::White);
-    text.setCharacterSize(12);
+    text.setCharacterSize(200);
 
     // Physics
     World world;
-    world.init();
-    world.setSubStep(8);
-
+    world.burstRate = 4;
+    world.maxObject = 20000;
+    world.sections = 8;
     world.type = ALGORITHM::GRID_MULTI;
+    world.setSubStep(8);
+    world.ballRadius = 30;
+
+    world.init();
 
     while (window.isOpen())
     {

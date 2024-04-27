@@ -37,7 +37,7 @@ World::World()
 
 void World::init()
 {
-    pool = new ThreadPool(4);
+    pool = new ThreadPool(sections);
 
     blur.loadFromFile("resource/circle.png");
 
@@ -46,30 +46,26 @@ void World::init()
     bodies.reserve(20000);
 
     // static body init
-    // float tr = ballRadius;
-    // for (int i = 0; i < 5; i++)
-    // {
-    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(200 + i * tr
-    //     * 2.0f, 300 - i * tr), tr); staticTemp->setTexture(&blur);
-    //     bodies.push_back(staticTemp);
-    // }
-    // for (int i = 0; i < 5; i++)
-    // {
-    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(250 - i * tr
-    //     * 2.0f, 600 - i * tr), tr); staticTemp->setTexture(&blur);
-    //     bodies.push_back(staticTemp);
-    // }
-    // for (int i = 0; i < 5; i++)
-    // {
-    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(500 + i * tr
-    //     * 2.0f, 500), tr); staticTemp->setTexture(&blur);
-    //     bodies.push_back(staticTemp);;
-    // }
+
+    float tr = ballRadius;
+    for (int cnt = 0; cnt < 6; cnt++)
+    {
+        sf::Vector2f basePos = sf::Vector2f(rand() % winWidth, rand() % winHeight);
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 15; j++)
+            {
+                StaticBody *staticTemp = new StaticBody(sf::Vector2f(basePos.x + j * tr * 2.0f, basePos.y + i * tr), tr);
+                staticTemp->setTexture(&blur);
+                bodies.push_back(staticTemp);
+            }
+        }
+    }
 
     int diameter = ballRadius * 2;
-    gridWidth = winWidth / diameter + 2;
-    gridHeight = winHeight / diameter + 2;
-    grid = triple_vector(gridHeight, double_vector(gridWidth));
+    gridWidth = winWidth / diameter + 1;
+    gridHeight = winHeight / diameter + 1;
+    grid = triple_vector(gridHeight + 2, double_vector(gridWidth + 2));
 }
 
 void World::update()
@@ -80,7 +76,7 @@ void World::update()
     t += 0.001f;
     if (counter > interval && objCounter < maxObject)
     {
-        for (int i = 0; i < 2; ++i)
+        for (int i = 0; i < burstRate; ++i)
         {
             counter = 0.0f;
             objCounter++;
@@ -178,44 +174,6 @@ int World::getBodyCount() { return objCounter; }
 
 void World::setSubStep(int count) { sub_steps = count; }
 
-void World::resolveCollisionMultithread()
-{
-    int diameter = ballRadius * 2;
-    int numberOfBody = bodies.size();
-    for (int i = 0; i < gridHeight; i++)
-        for (int j = 0; j < gridWidth; j++)
-            grid[i][j].clear();
-
-    for (int i = 0; i < numberOfBody; i++)
-    {
-        sf::Vector2f pos = bodies[i]->getPosition();
-        int y = pos.y / diameter;
-        int x = pos.x / diameter;
-        grid[y + 1][x + 1].push_back(i);
-    }
-
-    // resolveCollisionGrid();
-
-    // for (int i = 1; i <= sections; i++)
-    // {
-    //     pool->enqueue([this, i]
-    //                   { this->resolveCollisionGrid(1, gridWidth / sections * i + 1); });
-    // }
-
-    // method to create thread every frame
-
-    std::vector<std::thread> workers;
-    for (int i = 1; i <= sections; i++)
-    {
-        workers.emplace_back([this, i]
-                             { this->resolveCollisionGrid(gridWidth / sections * (i - 1) + 1, gridWidth / sections * i + 1); });
-    }
-    for (std::thread &w : workers)
-    {
-        w.join();
-    }
-}
-
 void World::resolveCollisionSort()
 {
     int numberOfBody = bodies.size();
@@ -294,9 +252,23 @@ void World::resolveCollisionNaive()
 
 void World::resolveCollisionGrid()
 {
-    for (int i = 1; i < gridHeight - 1; i++)
+    int diameter = ballRadius * 2;
+    int numberOfBody = bodies.size();
+    for (int i = 0; i < gridHeight + 2; i++)
+        for (int j = 0; j < gridWidth + 2; j++)
+            grid[i][j].clear();
+
+    for (int i = 0; i < numberOfBody; i++)
     {
-        for (int j = 1; j < gridWidth - 1; j++)
+        sf::Vector2f pos = bodies[i]->getPosition();
+        int y = pos.y / diameter;
+        int x = pos.x / diameter;
+        grid[y + 1][x + 1].push_back(i);
+    }
+
+    for (int i = 1; i <= gridHeight; i++)
+    {
+        for (int j = 1; j <= gridWidth; j++)
         {
             for (int k : grid[i][j])
             {
@@ -306,11 +278,49 @@ void World::resolveCollisionGrid()
     }
 }
 
-void World::resolveCollisionGrid(int start, int end)
+void World::resolveCollisionMultithread()
 {
-    for (int i = 1; i < gridHeight - 1; i++)
+    int diameter = ballRadius * 2;
+    int numberOfBody = bodies.size();
+    for (int i = 0; i < gridHeight; i++)
+        for (int j = 0; j < gridWidth; j++)
+            grid[i][j].clear();
+
+    for (int i = 0; i < numberOfBody; i++)
     {
-        for (int j = start; j < end - 1; j++)
+        sf::Vector2f pos = bodies[i]->getPosition();
+        int y = pos.y / diameter;
+        int x = pos.x / diameter;
+        grid[y + 1][x + 1].push_back(i);
+    }
+
+    for (int i = 1; i <= sections; i++)
+    {
+        pool->addTask([this, i]
+                      { this->solveCollisionGridInRange(gridWidth / (i - 1) + 1, gridWidth / i); });
+    }
+
+    pool->waitForCompletion();
+
+    // method to create thread every frame
+
+    // std::vector<std::thread> workers;
+    // for (int i = 1; i <= sections; i++)
+    // {
+    //     workers.emplace_back([this, i]
+    //                          { this->solveCollisionGridInRange(gridWidth / sections * (i - 1) + 1, gridWidth / sections * i); });
+    // }
+    // for (std::thread &w : workers)
+    // {
+    //     w.join();
+    // }
+}
+
+void World::solveCollisionGridInRange(int start, int end)
+{
+    for (int i = 1; i <= gridHeight; i++)
+    {
+        for (int j = start; j <= end; j++)
         {
             for (int k : grid[i][j])
             {

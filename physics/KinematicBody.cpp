@@ -12,7 +12,7 @@ KinematicBody::KinematicBody() {
     // shape.setRadius(r);
     shape.setSize(sf::Vector2f(r * 2, r * 2));
     shape.setOrigin(r, r);
-    shape.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255, 255));
+    shape.setFillColor(sf::Color(255, 255, 255, 255));
 }
 
 KinematicBody::KinematicBody(sf::Vector2f p, float radius, sf::Color color)

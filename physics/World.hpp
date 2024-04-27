@@ -27,7 +27,7 @@ public:
     void resolveCollisionSort();
     void resolveCollisionGrid();
     void resolveCollisionMultithread();
-    void resolveCollisionGrid(int start, int end);
+    void solveCollisionGridInRange(int start, int end);
     void handleLocalGridCollision(int k, int y, int x);
     void update();
     void draw(sf::RenderWindow &window);
@@ -38,17 +38,19 @@ public:
 public:
     ALGORITHM type;
     int sections = 6;
+    int ballRadius = 10;
+    int maxObject = 100000;
+    int burstRate = 2;
 private:
     int winWidth = 8000;
     int winHeight = 8000;
     sf::Vector2f shooterPos = sf::Vector2f(200,0);
     int sub_steps = 6;
-    int ballRadius = 10;
-    int objCounter = 0, maxObject = 100000;
+    int objCounter = 0;
     float counter = 0, t = 0;
     float interval = 0.001f;
     float frame_dt = 0.0f;
-    sf::Vector2f gravity = sf::Vector2f(0.0f, 1000.0f);
+    sf::Vector2f gravity = sf::Vector2f(0.0f, 10000.0f);
     std::vector<PhysicsBody*> bodies;
     sf::Texture blur;
 
