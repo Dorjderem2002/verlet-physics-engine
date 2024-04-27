@@ -11,8 +11,8 @@ int main()
     sf::ContextSettings settings;
     // settings.antialiasingLevel = 16.0;
     sf::RenderWindow window(sf::VideoMode(800, 800), "Performance balls", sf::Style::Default, settings);
-    sf::View view(sf::FloatRect(0, 0, 800, 800));
-    window.setFramerateLimit(120);
+    sf::View view(sf::FloatRect(0, 0, 4000, 4000));
+    // window.setFramerateLimit(60);
     window.setView(view);
     sf::Clock dtClock;
 
@@ -27,7 +27,7 @@ int main()
     // Physics
     World world;
     world.init();
-    world.setSubStep(10);
+    world.setSubStep(8);
 
     while (window.isOpen())
     {
@@ -66,24 +66,25 @@ int main()
         int bCount = world.getBodyCount();
         text.setString("FPS: " + std::to_string(fps) + "\nBody count: " + std::to_string(bCount));
 
+        float cameraSpeed = 50;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
         {
-            view.move(-5, 0);
+            view.move(-cameraSpeed, 0);
             window.setView(view);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
         {
-            view.move(5, 0);
+            view.move(cameraSpeed, 0);
             window.setView(view);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         {
-            view.move(0, -5);
+            view.move(0, -cameraSpeed);
             window.setView(view);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         {
-            view.move(0, 5);
+            view.move(0, cameraSpeed);
             window.setView(view);
         }
 

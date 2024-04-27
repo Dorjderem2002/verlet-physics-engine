@@ -26,12 +26,12 @@ public:
     int getBodyCount();
     void setSubStep(int count);
 private:
-    int winWidth = 800;
-    int winHeight = 800;
+    int winWidth = 8000;
+    int winHeight = 8000;
     sf::Vector2f shooterPos = sf::Vector2f(200,0);
     int sub_steps = 6;
-    int ballRadius = 3;
-    int objCounter = 0, maxObject = 20000;
+    int ballRadius = 10;
+    int objCounter = 0, maxObject = 100000;
     float counter = 0, t = 0;
     float interval = 0.001f;
     float frame_dt = 0.0f;

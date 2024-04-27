@@ -2,9 +2,9 @@
 #include "KinematicBody.hpp"
 #include "StaticBody.hpp"
 
-#include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 #include <thread>
 
 #define triple_vector std::vector<std::vector<std::vector<int>>>
@@ -31,9 +31,7 @@ sf::Color getRainbow(float t)
             static_cast<uint8_t>(255.0f * b * b)};
 }
 
-World::World()
-{
-}
+World::World() {}
 
 void World::init()
 {
@@ -42,26 +40,26 @@ void World::init()
 
     frame_dt = 1.0f / 60.0f;
 
-    bodies.reserve(10000);
+    bodies.reserve(20000);
 
     // static body init
     // float tr = ballRadius;
     // for (int i = 0; i < 5; i++)
     // {
-    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(200 + i * tr * 2.0f, 300 - i * tr), tr);
-    //     staticTemp->setTexture(&blur);
+    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(200 + i * tr
+    //     * 2.0f, 300 - i * tr), tr); staticTemp->setTexture(&blur);
     //     bodies.push_back(staticTemp);
     // }
     // for (int i = 0; i < 5; i++)
     // {
-    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(250 - i * tr * 2.0f, 600 - i * tr), tr);
-    //     staticTemp->setTexture(&blur);
+    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(250 - i * tr
+    //     * 2.0f, 600 - i * tr), tr); staticTemp->setTexture(&blur);
     //     bodies.push_back(staticTemp);
     // }
     // for (int i = 0; i < 5; i++)
     // {
-    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(500 + i * tr * 2.0f, 500), tr);
-    //     staticTemp->setTexture(&blur);
+    //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(500 + i * tr
+    //     * 2.0f, 500), tr); staticTemp->setTexture(&blur);
     //     bodies.push_back(staticTemp);
     // }
 
@@ -83,9 +81,10 @@ void World::update()
         {
             counter = 0.0f;
             objCounter++;
-            shooterPos.x = rand() % 500 + 100;
-            KinematicBody *tBody = new KinematicBody(shooterPos, ballRadius, getRainbow(t));
-            tBody->setVelocity(sf::Vector2f(rand() % 2000 - 1000, 0), sub_dt);
+            shooterPos.x = rand() % 100 + 200;
+            KinematicBody *tBody =
+                new KinematicBody(shooterPos, ballRadius, getRainbow(t));
+            tBody->setVelocity(sf::Vector2f(0, 0), sub_dt);
             tBody->setTexture(&blur);
             bodies.push_back(tBody);
         }
@@ -113,12 +112,14 @@ void World::update()
 
         // resolveCollisionGrid();
 
-        std::thread left([this]
-                         { this->resolveCollisionGrid(1, gridWidth / 3 + 1); });
+        std::thread left(
+            [this]
+            { this->resolveCollisionGrid(1, gridWidth / 3 + 1); });
         std::thread mid([this]
-                         { this->resolveCollisionGrid(gridWidth / 3, gridWidth / 3 * 2 + 1); });
-        std::thread right([this]
-                          { this->resolveCollisionGrid(gridWidth / 3 * 2, gridWidth); });
+                        { this->resolveCollisionGrid(gridWidth / 3, gridWidth / 3 * 2 + 1); });
+        std::thread right(
+            [this]
+            { this->resolveCollisionGrid(gridWidth / 3 * 2, gridWidth); });
 
         left.join();
         mid.join();
@@ -147,7 +148,7 @@ void World::applyConstraint()
 {
     for (PhysicsBody *b : bodies)
     {
-        b->wallCollide(800, 800);
+        b->wallCollide(winWidth, winHeight);
     }
 }
 
@@ -175,23 +176,17 @@ void World::draw(sf::RenderWindow &window)
         vertices[4 * i + 2] = bottomRight;
         vertices[4 * i + 3] = bottomLeft;
     }
+    window.draw(vertices, &blur);
     // old slow code
     // for (PhysicsBody *b : bodies)
     // {
     //     b->draw(window);
     // }
-    // window.draw(vertices, &blur);
 }
 
-int World::getBodyCount()
-{
-    return objCounter;
-}
+int World::getBodyCount() { return objCounter; }
 
-void World::setSubStep(int count)
-{
-    sub_steps = count;
-}
+void World::setSubStep(int count) { sub_steps = count; }
 
 void World::resolveCollisionSort()
 {

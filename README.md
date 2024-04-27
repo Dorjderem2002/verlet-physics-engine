@@ -1,6 +1,7 @@
 ### Physics simulation Cirlce2Circle
 
-10000 objects at 80FPS
+20000 objects at 60FPS
+M1 PRO
 
 More optimizations coming soon
 
