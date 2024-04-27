@@ -58,6 +58,11 @@
         "algorithm": "cpp",
         "thread": "cpp",
         "memory": "cpp",
-        "functional": "cpp"
+        "functional": "cpp",
+        "queue": "cpp",
+        "deque": "cpp",
+        "execution": "cpp",
+        "future": "cpp",
+        "condition_variable": "cpp"
     }
 }

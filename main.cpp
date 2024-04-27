@@ -11,7 +11,7 @@ int main()
     sf::ContextSettings settings;
     // settings.antialiasingLevel = 16.0;
     sf::RenderWindow window(sf::VideoMode(800, 800), "Performance balls", sf::Style::Default, settings);
-    sf::View view(sf::FloatRect(0, 0, 4000, 4000));
+    sf::View view(sf::FloatRect(0, 0, 800, 800));
     // window.setFramerateLimit(60);
     window.setView(view);
     sf::Clock dtClock;

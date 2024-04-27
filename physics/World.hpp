@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "PhysicsBody.hpp"
+#include "ThreadPool.hpp"
 
 #define triple_vector std::vector<std::vector<std::vector<int>>>
 #define double_vector std::vector<std::vector<int>>
@@ -38,8 +39,9 @@ private:
     sf::Vector2f gravity = sf::Vector2f(0.0f, 1000.0f);
     std::vector<PhysicsBody*> bodies;
     sf::Texture blur;
-    
 
     int gridWidth, gridHeight;
     triple_vector grid;
+
+    ThreadPool *pool;
 };

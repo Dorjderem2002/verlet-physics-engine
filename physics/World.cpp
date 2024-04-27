@@ -31,7 +31,9 @@ sf::Color getRainbow(float t)
             static_cast<uint8_t>(255.0f * b * b)};
 }
 
-World::World() {}
+World::World() {
+    pool = new ThreadPool(3);
+}
 
 void World::init()
 {
@@ -60,7 +62,7 @@ void World::init()
     // {
     //     StaticBody *staticTemp = new StaticBody(sf::Vector2f(500 + i * tr
     //     * 2.0f, 500), tr); staticTemp->setTexture(&blur);
-    //     bodies.push_back(staticTemp);
+    //     bodies.push_back(staticTemp);;
     // }
 
     int diameter = ballRadius * 2;
@@ -112,18 +114,27 @@ void World::update()
 
         // resolveCollisionGrid();
 
-        std::thread left(
-            [this]
+        pool->enqueue([this]
             { this->resolveCollisionGrid(1, gridWidth / 3 + 1); });
-        std::thread mid([this]
+        pool->enqueue([this]
                         { this->resolveCollisionGrid(gridWidth / 3, gridWidth / 3 * 2 + 1); });
-        std::thread right(
-            [this]
+        pool->enqueue([this]
             { this->resolveCollisionGrid(gridWidth / 3 * 2, gridWidth); });
 
-        left.join();
-        mid.join();
-        right.join();
+        // method to create thread every frame
+
+        // std::thread left(
+        //     [this]
+        //     { this->resolveCollisionGrid(1, gridWidth / 3 + 1); });
+        // std::thread mid([this]
+        //                 { this->resolveCollisionGrid(gridWidth / 3, gridWidth / 3 * 2 + 1); });
+        // std::thread right(
+        //     [this]
+        //     { this->resolveCollisionGrid(gridWidth / 3 * 2, gridWidth); });
+
+        // left.join();
+        // mid.join();
+        // right.join();
     }
     updatePosition(sub_dt);
 }
