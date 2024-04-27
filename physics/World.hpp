@@ -9,6 +9,13 @@
 #define triple_vector std::vector<std::vector<std::vector<int>>>
 #define double_vector std::vector<std::vector<int>>
 
+enum ALGORITHM {
+    NAIVE,
+    SORT,
+    GRID,
+    GRID_MULTI
+};
+
 class World {
 public:
     World();
@@ -19,6 +26,7 @@ public:
     void resolveCollisionNaive();
     void resolveCollisionSort();
     void resolveCollisionGrid();
+    void resolveCollisionMultithread();
     void resolveCollisionGrid(int start, int end);
     void handleLocalGridCollision(int k, int y, int x);
     void update();
@@ -26,6 +34,10 @@ public:
 
     int getBodyCount();
     void setSubStep(int count);
+
+public:
+    ALGORITHM type;
+    int sections = 6;
 private:
     int winWidth = 8000;
     int winHeight = 8000;

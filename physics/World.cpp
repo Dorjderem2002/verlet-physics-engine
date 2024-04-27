@@ -31,12 +31,13 @@ sf::Color getRainbow(float t)
             static_cast<uint8_t>(255.0f * b * b)};
 }
 
-World::World() {
-    pool = new ThreadPool(3);
+World::World()
+{
 }
 
 void World::init()
 {
+    pool = new ThreadPool(4);
 
     blur.loadFromFile("resource/circle.png");
 
@@ -95,46 +96,24 @@ void World::update()
     {
         applyGravity();
         applyConstraint();
-        // resolveCollisionSort();
-        // resolveCollisionNaive();
-
-        int diameter = ballRadius * 2;
-        int numberOfBody = bodies.size();
-        for (int i = 0; i < gridHeight; i++)
-            for (int j = 0; j < gridWidth; j++)
-                grid[i][j].clear();
-
-        for (int i = 0; i < numberOfBody; i++)
+        switch (type)
         {
-            sf::Vector2f pos = bodies[i]->getPosition();
-            int y = pos.y / diameter;
-            int x = pos.x / diameter;
-            grid[y + 1][x + 1].push_back(i);
+        case NAIVE:
+            resolveCollisionNaive();
+            break;
+        case SORT:
+            resolveCollisionSort();
+            break;
+        case GRID:
+            resolveCollisionGrid();
+            break;
+        case GRID_MULTI:
+            resolveCollisionMultithread();
+            break;
+        default:
+            resolveCollisionMultithread();
+            break;
         }
-
-        // resolveCollisionGrid();
-
-        pool->enqueue([this]
-            { this->resolveCollisionGrid(1, gridWidth / 3 + 1); });
-        pool->enqueue([this]
-                        { this->resolveCollisionGrid(gridWidth / 3, gridWidth / 3 * 2 + 1); });
-        pool->enqueue([this]
-            { this->resolveCollisionGrid(gridWidth / 3 * 2, gridWidth); });
-
-        // method to create thread every frame
-
-        // std::thread left(
-        //     [this]
-        //     { this->resolveCollisionGrid(1, gridWidth / 3 + 1); });
-        // std::thread mid([this]
-        //                 { this->resolveCollisionGrid(gridWidth / 3, gridWidth / 3 * 2 + 1); });
-        // std::thread right(
-        //     [this]
-        //     { this->resolveCollisionGrid(gridWidth / 3 * 2, gridWidth); });
-
-        // left.join();
-        // mid.join();
-        // right.join();
     }
     updatePosition(sub_dt);
 }
@@ -198,6 +177,44 @@ void World::draw(sf::RenderWindow &window)
 int World::getBodyCount() { return objCounter; }
 
 void World::setSubStep(int count) { sub_steps = count; }
+
+void World::resolveCollisionMultithread()
+{
+    int diameter = ballRadius * 2;
+    int numberOfBody = bodies.size();
+    for (int i = 0; i < gridHeight; i++)
+        for (int j = 0; j < gridWidth; j++)
+            grid[i][j].clear();
+
+    for (int i = 0; i < numberOfBody; i++)
+    {
+        sf::Vector2f pos = bodies[i]->getPosition();
+        int y = pos.y / diameter;
+        int x = pos.x / diameter;
+        grid[y + 1][x + 1].push_back(i);
+    }
+
+    // resolveCollisionGrid();
+
+    // for (int i = 1; i <= sections; i++)
+    // {
+    //     pool->enqueue([this, i]
+    //                   { this->resolveCollisionGrid(1, gridWidth / sections * i + 1); });
+    // }
+
+    // method to create thread every frame
+
+    std::vector<std::thread> workers;
+    for (int i = 1; i <= sections; i++)
+    {
+        workers.emplace_back([this, i]
+                             { this->resolveCollisionGrid(gridWidth / sections * (i - 1) + 1, gridWidth / sections * i + 1); });
+    }
+    for (std::thread &w : workers)
+    {
+        w.join();
+    }
+}
 
 void World::resolveCollisionSort()
 {

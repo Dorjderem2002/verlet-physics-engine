@@ -29,6 +29,8 @@ int main()
     world.init();
     world.setSubStep(8);
 
+    world.type = ALGORITHM::GRID_MULTI;
+
     while (window.isOpen())
     {
         sf::Event event;
