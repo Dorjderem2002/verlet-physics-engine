@@ -14,6 +14,7 @@ public:
     virtual void setVelocity(sf::Vector2f v, float dt) = 0;
     virtual void addVelocity(sf::Vector2f v, float dt) = 0;
     virtual sf::Vector2f getPosition() = 0;
+    virtual sf::Vector2f getPrevPosition() = 0;
     virtual float getRadius() = 0;
     virtual bool isKinematic() = 0;
     virtual sf::Color getColor() = 0;

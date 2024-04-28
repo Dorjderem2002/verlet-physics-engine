@@ -3,24 +3,24 @@
 #include <cmath>
 
 StaticBody::StaticBody() {
-    // shape.setRadius(10.0f);
-    shape.setSize(sf::Vector2f(10,10));
+    // m_shape.setRadius(10.0f);
+    m_shape.setSize(sf::Vector2f(10,10));
 }
 
 StaticBody::StaticBody(float radius) {
-    r = radius;
-    // shape.setRadius(r);
-    shape.setSize(sf::Vector2f(r * 2,r * 2));
-    shape.setFillColor(sf::Color::White);
-    shape.setOrigin(r, r);
-    shape.setPosition(0,0);
+    m_r = radius;
+    // m_shape.setRadius(m_r);
+    m_shape.setSize(sf::Vector2f(m_r * 2,m_r * 2));
+    m_shape.setFillColor(sf::Color::White);
+    m_shape.setOrigin(m_r, m_r);
+    m_shape.setPosition(0,0);
 }
 StaticBody::StaticBody(sf::Vector2f p, float radius) {
-    r = radius;
-    // shape.setRadius(r);
-    shape.setSize(sf::Vector2f(r * 2,r * 2));
-    shape.setFillColor(sf::Color::White);
-    shape.setOrigin(r, r);
+    m_r = radius;
+    // m_shape.setRadius(m_r);
+    m_shape.setSize(sf::Vector2f(m_r * 2,m_r * 2));
+    m_shape.setFillColor(sf::Color::White);
+    m_shape.setOrigin(m_r, m_r);
     setPosition(p);
 }
 
@@ -29,12 +29,12 @@ void StaticBody::update(float dt) {
 }
 
 void StaticBody::draw(sf::RenderWindow& win) {
-    win.draw(shape);
+    win.draw(m_shape);
 }
 
 bool StaticBody::isColliding(PhysicsBody* target) {
-    sf::Vector2f diff = pos - target->getPosition();
-    return r + target->getRadius() > (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
+    sf::Vector2f diff = m_pos - target->getPosition();
+    return m_r + target->getRadius() > (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
 }
 
 void StaticBody::wallCollide(int w, int h) {
@@ -42,9 +42,9 @@ void StaticBody::wallCollide(int w, int h) {
 }
 
 void StaticBody::resolveCollision(PhysicsBody* target) {
-    sf::Vector2f diff = pos - target->getPosition();
+    sf::Vector2f diff = m_pos - target->getPosition();
     float len_diff = (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
-    float len_r = r + target->getRadius();
+    float len_r = m_r + target->getRadius();
     float d = len_diff - len_r;
     sf::Vector2f nVec = diff / len_diff;
     sf::Vector2f newPos = target->getPosition() + nVec * (d);
@@ -52,8 +52,8 @@ void StaticBody::resolveCollision(PhysicsBody* target) {
 }
 
 void StaticBody::setPosition(sf::Vector2f newPos) {
-    pos = newPos;
-    shape.setPosition(newPos);
+    m_pos = newPos;
+    m_shape.setPosition(newPos);
 }
 
 void StaticBody::accelerate(sf::Vector2f a) {
@@ -69,11 +69,15 @@ void StaticBody::addVelocity(sf::Vector2f v, float dt) {
 }
 
 sf::Vector2f StaticBody::getPosition() {
-    return pos;
+    return m_pos;
+}
+
+sf::Vector2f StaticBody::getPrevPosition() {
+    return m_pos;
 }
 
 float StaticBody::getRadius() {
-    return r;
+    return m_r;
 }
 
 bool StaticBody::isKinematic() {
@@ -87,7 +91,7 @@ sf::Color StaticBody::getColor()
 
 void StaticBody::setTexture(sf::Texture *t)
 {
-    shape.setTexture(t);
+    m_shape.setTexture(t);
 }
 
 StaticBody::~StaticBody() {

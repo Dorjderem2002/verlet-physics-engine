@@ -3,119 +3,124 @@
 #include <cmath>
 
 KinematicBody::KinematicBody() {
-    pos.x = 20;
-    pos.y = 20;
-    old = pos;
-    r = 10;
-    acc = {0,0};
-    shape.setPosition(sf::Vector2f(pos.x, pos.y));
-    // shape.setRadius(r);
-    shape.setSize(sf::Vector2f(r * 2, r * 2));
-    shape.setOrigin(r, r);
-    shape.setFillColor(sf::Color(255, 255, 255, 255));
+    m_pos.x = 20;
+    m_pos.y = 20;
+    m_old = m_pos;
+    m_r = 10;
+    m_acc = {0,0};
+    m_shape.setPosition(sf::Vector2f(m_pos.x, m_pos.y));
+    // m_shape.setRadius(m_r);
+    m_shape.setSize(sf::Vector2f(m_r * 2, m_r * 2));
+    m_shape.setOrigin(m_r, m_r);
+    m_shape.setFillColor(sf::Color(255, 255, 255, 255));
 }
 
 KinematicBody::KinematicBody(sf::Vector2f p, float radius, sf::Color color)
 {
-    pos = p;
-    old = pos;
-    r = radius;
-    acc = {0,0};
-    shape.setPosition(pos);
-    // shape.setRadius(r);
-    shape.setSize(sf::Vector2f(r * 2, r * 2));
-    shape.setOrigin(r, r);
-    shape.setFillColor(color);
+    m_pos = p;
+    m_old = m_pos;
+    m_r = radius;
+    m_acc = {0,0};
+    m_shape.setPosition(m_pos);
+    // m_shape.setRadius(m_r);
+    m_shape.setSize(sf::Vector2f(m_r * 2, m_r * 2));
+    m_shape.setOrigin(m_r, m_r);
+    m_shape.setFillColor(color);
 }
 
 void KinematicBody::update(float dt)
 {
-    sf::Vector2f vel = pos - old;
-    old = pos;
-    pos = pos + vel + acc * dt * dt;
-    acc = {};
+    sf::Vector2f vel = m_pos - m_old;
+    m_old = m_pos;
+    m_pos = m_pos + vel + m_acc * dt * dt;
+    m_acc = {};
 
-    setPosition(pos);
+    setPosition(m_pos);
 }
 
 void KinematicBody::draw(sf::RenderWindow &win)
 {
-    win.draw(shape);
+    win.draw(m_shape);
 }
 
 void KinematicBody::accelerate(sf::Vector2f a)
 {
-    acc += a;
+    m_acc += a;
 }
 
 bool KinematicBody::isColliding(PhysicsBody* target)
 {
-    sf::Vector2f diff = pos - target->getPosition();
-    return r + target->getRadius() > (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
+    sf::Vector2f diff = m_pos - target->getPosition();
+    return m_r + target->getRadius() > (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
 }
 
 void KinematicBody::wallCollide(int w, int h)
 {
-    if (pos.y > h - r)
+    if (m_pos.y > h - m_r)
     {
-        pos.y = h - r;
-        shape.setPosition(pos);
+        m_pos.y = h - m_r;
+        m_shape.setPosition(m_pos);
     }
-    if (pos.y < r)
+    if (m_pos.y < m_r)
     {
-        pos.y = r;
-        shape.setPosition(pos);
+        m_pos.y = m_r;
+        m_shape.setPosition(m_pos);
     }
-    if (pos.x > w - r)
+    if (m_pos.x > w - m_r)
     {
-        pos.x = w - r;
-        shape.setPosition(pos);
+        m_pos.x = w - m_r;
+        m_shape.setPosition(m_pos);
     }
-    if (pos.x < r)
+    if (m_pos.x < m_r)
     {
-        pos.x = r;
-        shape.setPosition(pos);
+        m_pos.x = m_r;
+        m_shape.setPosition(m_pos);
     }
 }
 
 void KinematicBody::resolveCollision(PhysicsBody* target)
 {
-    sf::Vector2f diff = pos - target->getPosition();
+    sf::Vector2f diff = m_pos - target->getPosition();
     float len_diff = (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
-    float len_r = r + target->getRadius();
+    float len_r = m_r + target->getRadius();
     float d = len_diff - len_r;
 
     sf::Vector2f nVec = diff / len_diff;
 
-    pos -= nVec * (d / 2.0f);
+    m_pos -= nVec * (d / 2.0f);
     sf::Vector2f newPos = target->getPosition() + nVec * (d / 2.0f);
-    setPosition(pos);
+    setPosition(m_pos);
     target->setPosition(newPos);
 }
 
 void KinematicBody::setPosition(sf::Vector2f newPos)
 {
-    pos = newPos;
-    shape.setPosition(newPos);
+    m_pos = newPos;
+    m_shape.setPosition(newPos);
 }
 
 void KinematicBody::setVelocity(sf::Vector2f v, float dt) 
 {
-    old = pos - (v * dt);
+    m_old = m_pos - (v * dt);
 }
 
 void KinematicBody::addVelocity(sf::Vector2f v, float dt) 
 {
-    old -= (v * dt);
+    m_old -= (v * dt);
 }
 
 sf::Vector2f KinematicBody::getPosition()
 {
-    return pos;
+    return m_pos;
+}
+
+sf::Vector2f KinematicBody::getPrevPosition()
+{
+    return m_old;
 }
 
 float KinematicBody::getRadius() {
-    return r;
+    return m_r;
 }
 
 bool KinematicBody::isKinematic() {
@@ -124,11 +129,11 @@ bool KinematicBody::isKinematic() {
 
 sf::Color KinematicBody::getColor()
 {
-    return shape.getFillColor();
+    return m_shape.getFillColor();
 }
 
 void KinematicBody::setTexture(sf::Texture* t) {
-    shape.setTexture(t);
+    m_shape.setTexture(t);
 }
 
 KinematicBody::~KinematicBody() {

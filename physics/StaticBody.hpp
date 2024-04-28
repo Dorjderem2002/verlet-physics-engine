@@ -18,6 +18,7 @@ public:
     void setVelocity(sf::Vector2f v, float dt) override;
     void addVelocity(sf::Vector2f v, float dt) override;
     sf::Vector2f getPosition() override;
+    sf::Vector2f getPrevPosition() override;
     float getRadius() override;
     bool isKinematic() override;
     sf::Color getColor() override;
@@ -25,7 +26,7 @@ public:
     void setTexture(sf::Texture *t);
     ~StaticBody();
 private:
-    sf::RectangleShape shape;
-    sf::Vector2f pos;
-    float r;
+    sf::RectangleShape m_shape;
+    sf::Vector2f m_pos;
+    float m_r;
 };

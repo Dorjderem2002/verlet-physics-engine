@@ -32,6 +32,7 @@ int main()
     world.type = ALGORITHM::GRID_MULTI;
     world.setSubStep(6);
     world.ballRadius = 40;
+    world.recordPositions = false;
 
     world.init();
 
