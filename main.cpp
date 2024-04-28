@@ -27,11 +27,11 @@ int main()
     // Physics
     World world;
     world.burstRate = 4;
-    world.maxObject = 20000;
-    world.sections = 8;
+    world.maxObject = 12000;
+    world.sections = 5;
     world.type = ALGORITHM::GRID_MULTI;
-    world.setSubStep(8);
-    world.ballRadius = 30;
+    world.setSubStep(6);
+    world.ballRadius = 40;
 
     world.init();
 

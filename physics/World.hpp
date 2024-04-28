@@ -44,7 +44,7 @@ public:
 private:
     int winWidth = 8000;
     int winHeight = 8000;
-    sf::Vector2f shooterPos = sf::Vector2f(200,0);
+    sf::Vector2f shooterPos = sf::Vector2f(500,200);
     int sub_steps = 6;
     int objCounter = 0;
     float counter = 0, t = 0;

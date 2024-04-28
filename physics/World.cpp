@@ -308,7 +308,7 @@ void World::resolveCollisionMultithread()
     // for (int i = 1; i <= sections; i++)
     // {
     //     workers.emplace_back([this, i]
-    //                          { this->solveCollisionGridInRange(gridWidth / sections * (i - 1) + 1, gridWidth / sections * i); });
+    //                          { this->solveCollisionGridInRange(gridWidth / (i - 1) + 1, gridWidth / i); });
     // }
     // for (std::thread &w : workers)
     // {
