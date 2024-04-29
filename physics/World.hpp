@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <torch/script.h> 
 #include <memory>
 
 #include "PhysicsBody.hpp"
@@ -32,6 +33,8 @@ public:
     void resolveCollisionMultithread();
     void solveCollisionGridInRange(int start, int end);
     void handleLocalGridCollision(int k, int y, int x);
+    void handleLocalGridCollisionWithML(int k, int y, int x);
+    void resolveCollisionNaiveML();
     void update();
     void draw(sf::RenderWindow &window);
 
@@ -44,10 +47,12 @@ public:
     int maxObject = 100000;
     int burstRate = 2;
     bool recordPositions = false;
+    torch::jit::script::Module torchModule;
+    bool useML = false;
+    sf::Vector2f m_shooterPos = sf::Vector2f(500,200);
 private:
     int m_winWidth = 8000;
     int m_winHeight = 8000;
-    sf::Vector2f m_shooterPos = sf::Vector2f(500,200);
     int m_sub_steps = 6;
     int m_objCounter = 0;
     float m_counter = 0, m_t = 0;

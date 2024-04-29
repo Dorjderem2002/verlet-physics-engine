@@ -12,7 +12,7 @@ class TaskQueue
 public:
     std::queue<std::function<void()>> m_tasks;
     std::mutex m_mutex;
-    std::atomic<uint32_t> m_remaining_tasks = 0;
+    std::atomic<int> m_remaining_tasks = 0;
 
     template <typename TCallback>
     void addTask(TCallback &&callback)
@@ -57,7 +57,7 @@ public:
 class Worker
 {
 public:
-    uint32_t m_id = 0;
+    int m_id = 0;
     std::thread m_thread;
     std::function<void()> m_task = nullptr;
     bool m_running = true;
@@ -65,7 +65,7 @@ public:
 
     Worker() = default;
 
-    Worker(TaskQueue &queue, uint32_t id)
+    Worker(TaskQueue &queue, int id)
         : m_id{id}, m_queue{&queue}
     {
         m_thread = std::thread([this]()
@@ -100,17 +100,17 @@ public:
 class ThreadPool
 {
 public:
-    uint32_t m_thread_count = 0;
+    int m_thread_count = 0;
     TaskQueue m_queue;
     std::vector<Worker> m_workers;
 
-    ThreadPool(uint32_t thread_count)
+    ThreadPool(int thread_count)
         : m_thread_count{thread_count}
     {
         m_workers.reserve(thread_count);
-        for (uint32_t i{thread_count}; i--;)
+        for (int i{thread_count}; i--;)
         {
-            m_workers.emplace_back(m_queue, static_cast<uint32_t>(m_workers.size()));
+            m_workers.emplace_back(m_queue, static_cast<int>(m_workers.size()));
         }
     }
 
@@ -131,26 +131,5 @@ public:
     void waitForCompletion() const
     {
         m_queue.waitForCompletion();
-    }
-
-    template <typename TCallback>
-    void dispatch(uint32_t element_count, TCallback &&callback)
-    {
-        const uint32_t batch_size = element_count / m_thread_count;
-        for (uint32_t i{0}; i < m_thread_count; ++i)
-        {
-            const uint32_t start = batch_size * i;
-            const uint32_t end = start + batch_size;
-            addTask([start, end, &callback]()
-                    { callback(start, end); });
-        }
-
-        if (batch_size * m_thread_count < element_count)
-        {
-            const uint32_t start = batch_size * m_thread_count;
-            callback(start, element_count);
-        }
-
-        waitForCompletion();
     }
 };

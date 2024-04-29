@@ -4,7 +4,9 @@
             "name": "Mac",
             "includePath": [
                 "${default}",
-                "include"
+                "${workspaceFolder}/**",
+                "/opt/homebrew/Cellar/pytorch/2.2.0_3/include/**"
+
             ],
             "defines": [],
             "macFrameworkPath": [

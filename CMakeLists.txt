@@ -1,15 +1,22 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 project(MyProject)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")
+# Set compiler flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2 ${TORCH_CXX_FLAGS}")
 
+# Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Find packages
+find_package(Torch REQUIRED)
 find_package(SFML COMPONENTS graphics system window REQUIRED)
 
+# Include all source files from the current directory and the "physics" subdirectory
 file(GLOB SOURCES "*.cpp" "physics/*.cpp")
 
+# Add executable target
 add_executable(main ${SOURCES})
 
-target_link_libraries(main PRIVATE sfml-graphics sfml-system sfml-window)
+# Link libraries
+target_link_libraries(main "${TORCH_LIBRARIES}" sfml-graphics sfml-system sfml-window)

@@ -63,6 +63,17 @@
         "deque": "cpp",
         "execution": "cpp",
         "future": "cpp",
-        "condition_variable": "cpp"
+        "condition_variable": "cpp",
+        "any": "cpp",
+        "cinttypes": "cpp",
+        "forward_list": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp",
+        "list": "cpp",
+        "regex": "cpp",
+        "shared_mutex": "cpp",
+        "stack": "cpp",
+        "typeindex": "cpp",
+        "unordered_set": "cpp"
     }
 }
