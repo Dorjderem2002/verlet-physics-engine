@@ -11,6 +11,9 @@ Collision handler algorithms
 - Sorting O(n * log(n))
 - Grid O(n * m)
 
+New Feature:
+- Collision resolving using Machine Learning
+
 Screenshot
 ![alt text](images/ss.png)
 

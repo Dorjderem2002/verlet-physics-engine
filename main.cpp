@@ -44,18 +44,18 @@ int main()
     world.burstRate = 1;
     world.maxObject = 400;
     world.sections = 5;
-    world.type = ALGORITHM::NAIVE;
+    world.type = ALGORITHM::GRID_MULTI;
     world.setSubStep(6);
     world.ballRadius = 200;
     world.recordPositions = false;
     world.torchModule = module;
-    world.useML = true;
+    world.useML = false;
 
     if (world.useML)
     {
         world.ballRadius = 200;
-        world.setSubStep(4);
-        world.maxObject = 50;
+        world.setSubStep(1);
+        world.maxObject = 5;
     }
 
     world.init();
