@@ -12,6 +12,7 @@ public:
     void update(float dt) override;
     void draw(sf::RenderWindow &win) override;
     bool isColliding(PhysicsBody *target) override;
+    bool contains(sf::Vector2f loc) override;
     void wallCollide(int w, int h) override;
     void resolveCollision(PhysicsBody *target) override;
     void setPosition(sf::Vector2f newPos) override;

@@ -7,6 +7,7 @@ public:
     virtual void update(float dt) = 0;
     virtual void draw(sf::RenderWindow& win) = 0;
     virtual bool isColliding(PhysicsBody* target) = 0;
+    virtual bool contains(sf::Vector2f loc) = 0;
     virtual void wallCollide(int w, int h) = 0;
     virtual void resolveCollision(PhysicsBody* target) = 0;
     virtual void setPosition(sf::Vector2f newPos) = 0;

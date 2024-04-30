@@ -12,6 +12,7 @@ public:
     void draw(sf::RenderWindow& win) override;
     bool isColliding(PhysicsBody* target) override;
     void wallCollide(int w, int h) override;
+    bool contains(sf::Vector2f loc) override;
     void resolveCollision(PhysicsBody* target) override;
     void setPosition(sf::Vector2f newPos) override;
     void accelerate(sf::Vector2f a) override;

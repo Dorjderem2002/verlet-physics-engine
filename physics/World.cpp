@@ -186,6 +186,18 @@ int World::getBodyCount() { return m_objCounter; }
 
 void World::setSubStep(int count) { m_sub_steps = count; }
 
+void World::controlBody(sf::Vector2f mousePos)
+{
+    for (PhysicsBody *t_body : m_bodies)
+    {
+        if(t_body->contains(mousePos))
+        {
+            t_body->setPosition(mousePos);
+            break;
+        }
+    }
+}
+
 void World::resolveCollisionSort()
 {
     int numberOfBody = m_bodies.size();

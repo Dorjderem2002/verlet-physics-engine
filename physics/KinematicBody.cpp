@@ -54,6 +54,11 @@ bool KinematicBody::isColliding(PhysicsBody* target)
     return m_r + target->getRadius() > (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
 }
 
+bool KinematicBody::contains(sf::Vector2f loc)
+{
+    return m_shape.getGlobalBounds().contains(loc);
+}
+
 void KinematicBody::wallCollide(int w, int h)
 {
     if (m_pos.y > h - m_r)

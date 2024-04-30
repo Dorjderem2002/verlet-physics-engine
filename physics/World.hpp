@@ -40,6 +40,8 @@ public:
 
     int getBodyCount();
     void setSubStep(int count);
+
+    void controlBody(sf::Vector2f mousePos);
 public:
     ALGORITHM type;
     int sections = 6;

@@ -42,20 +42,20 @@ int main()
     // Physics
     World world;
     world.burstRate = 1;
-    world.maxObject = 400;
+    world.maxObject = 200;
     world.sections = 5;
     world.type = ALGORITHM::GRID_MULTI;
     world.setSubStep(6);
     world.ballRadius = 200;
     world.recordPositions = false;
     world.torchModule = module;
-    world.useML = false;
+    world.useML = true;
 
     if (world.useML)
     {
         world.ballRadius = 200;
         world.setSubStep(1);
-        world.maxObject = 5;
+        world.maxObject = 200;
     }
 
     world.init();
@@ -117,6 +117,12 @@ int main()
         {
             view.move(0, cameraSpeed);
             window.setView(view);
+        }
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+            sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+            world.controlBody(worldPos);
         }
 
         window.clear(sf::Color::Black);
