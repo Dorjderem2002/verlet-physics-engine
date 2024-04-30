@@ -15,7 +15,9 @@ New Feature:
 - Collision resolving using Machine Learning
 
 Screenshot
+Circle-Circle collision without multithreading
 ![alt text](images/ss.png)
+Chain demonstration
 ![alt text](images/chain.png)
 
 HOW TO RUN:
