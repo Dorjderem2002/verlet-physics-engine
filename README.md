@@ -16,6 +16,7 @@ New Feature:
 
 Screenshot
 ![alt text](images/ss.png)
+![alt text](images/chain.png)
 
 HOW TO RUN:
 
