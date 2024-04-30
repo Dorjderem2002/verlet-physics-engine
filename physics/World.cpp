@@ -69,38 +69,36 @@ void World::init()
     // linker init
 
     {
-        m_objCounter += 4;
+        m_objCounter++;
         m_shooterPos.x = rand() % 4000;
         m_shooterPos.y = rand() % 4000;
         StaticBody *tBody1 =
             new StaticBody(m_shooterPos, ballRadius, getRainbow(m_t));
         tBody1->setTexture(&m_blur);
         m_bodies.push_back(tBody1);
+        m_objCounter++;
         m_shooterPos.x = rand() % 4000;
         m_shooterPos.y = rand() % 4000;
         KinematicBody *tBody2 =
             new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
         tBody2->setTexture(&m_blur);
         m_bodies.push_back(tBody2);
-        m_shooterPos.x = rand() % 4000;
-        m_shooterPos.y = rand() % 4000;
-        KinematicBody *tBody3 =
-            new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
-        tBody3->setTexture(&m_blur);
-        m_bodies.push_back(tBody3);
-        m_shooterPos.x = rand() % 4000;
-        m_shooterPos.y = rand() % 4000;
-        KinematicBody *tBody4 =
-            new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
-        tBody4->setTexture(&m_blur);
-        m_bodies.push_back(tBody4);
-
-        Linker *tempLink = new Linker(tBody1, tBody2, 600);
-        Linker *tempLink1 = new Linker(tBody2, tBody3, 600);
-        Linker *tempLink2 = new Linker(tBody3, tBody4, 600);
+        Linker *tempLink = new Linker(tBody1, tBody2, 400);
         m_linkers.push_back(tempLink);
-        m_linkers.push_back(tempLink1);
-        m_linkers.push_back(tempLink2);
+        KinematicBody *last = tBody2;
+        for (int i = 0; i < 10; i++)
+        {
+            m_objCounter++;
+            m_shooterPos.x = rand() % 4000;
+            m_shooterPos.y = rand() % 4000;
+            KinematicBody *tBody3 =
+                new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
+            tBody3->setTexture(&m_blur);
+            m_bodies.push_back(tBody3);
+            Linker *tempLink1 = new Linker(last, tBody3, 400);
+            m_linkers.push_back(tempLink1);
+            last = tBody3;
+        }
     }
 
     int diameter = ballRadius * 2;

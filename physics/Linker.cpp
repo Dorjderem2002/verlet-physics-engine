@@ -15,11 +15,11 @@ void Linker::update()
     sf::Vector2f dir = axis / curr_dis;
     dir.x *= diff * 0.5f;
     dir.y *= diff * 0.5f;
-    if (KinematicBody *t = dynamic_cast<KinematicBody *>(m_body_1))
+    if (m_body_1->isKinematic())
     {
         m_body_1->setPosition(m_body_1->getPosition() + dir);
     }
-    if (KinematicBody *t = dynamic_cast<KinematicBody *>(m_body_2))
+    if (m_body_2->isKinematic())
     {
         m_body_2->setPosition(m_body_2->getPosition() - dir);
     }

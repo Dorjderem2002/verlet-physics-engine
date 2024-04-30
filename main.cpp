@@ -94,6 +94,13 @@ int main()
         float dt = deltaTime.asSeconds();
         int fps = 1.0f / dt;
 
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+            sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+            world.controlBody(worldPos);
+        }
+
         world.update();
         int bCount = world.getBodyCount();
         text.setString("FPS: " + std::to_string(fps) + "\nBody count: " + std::to_string(bCount));
@@ -118,12 +125,6 @@ int main()
         {
             view.move(0, cameraSpeed);
             window.setView(view);
-        }
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        {
-            sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-            sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
-            world.controlBody(worldPos);
         }
 
         window.clear(sf::Color::Black);
