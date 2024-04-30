@@ -47,6 +47,7 @@ void World::init()
     m_frame_dt = 1.0f / 60.0f;
 
     m_bodies.reserve(20000);
+    m_linkers.reserve(1000);
 
     // static body init
 
@@ -65,6 +66,43 @@ void World::init()
     //     }
     // }
 
+    // linker init
+
+    {
+        m_objCounter += 4;
+        m_shooterPos.x = rand() % 4000;
+        m_shooterPos.y = rand() % 4000;
+        StaticBody *tBody1 =
+            new StaticBody(m_shooterPos, ballRadius, getRainbow(m_t));
+        tBody1->setTexture(&m_blur);
+        m_bodies.push_back(tBody1);
+        m_shooterPos.x = rand() % 4000;
+        m_shooterPos.y = rand() % 4000;
+        KinematicBody *tBody2 =
+            new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
+        tBody2->setTexture(&m_blur);
+        m_bodies.push_back(tBody2);
+        m_shooterPos.x = rand() % 4000;
+        m_shooterPos.y = rand() % 4000;
+        KinematicBody *tBody3 =
+            new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
+        tBody3->setTexture(&m_blur);
+        m_bodies.push_back(tBody3);
+        m_shooterPos.x = rand() % 4000;
+        m_shooterPos.y = rand() % 4000;
+        KinematicBody *tBody4 =
+            new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
+        tBody4->setTexture(&m_blur);
+        m_bodies.push_back(tBody4);
+
+        Linker *tempLink = new Linker(tBody1, tBody2, 600);
+        Linker *tempLink1 = new Linker(tBody2, tBody3, 600);
+        Linker *tempLink2 = new Linker(tBody3, tBody4, 600);
+        m_linkers.push_back(tempLink);
+        m_linkers.push_back(tempLink1);
+        m_linkers.push_back(tempLink2);
+    }
+
     int diameter = ballRadius * 2;
     m_gridWidth = m_winWidth / diameter + 1;
     m_gridHeight = m_winHeight / diameter + 1;
@@ -82,7 +120,7 @@ void World::update()
 
     m_counter += m_frame_dt;
     m_t += 0.001f;
-    if (m_counter > m_interval && m_objCounter < maxObject)
+    if (genBodies && m_counter > m_interval && m_objCounter < maxObject)
     {
         for (int i = 0; i < burstRate; ++i)
         {
@@ -101,6 +139,10 @@ void World::update()
     {
         applyGravity();
         applyConstraint();
+        for (Linker *i_linker : m_linkers)
+        {
+            i_linker->update();
+        }
         switch (type)
         {
         case NAIVE:
@@ -190,7 +232,7 @@ void World::controlBody(sf::Vector2f mousePos)
 {
     for (PhysicsBody *t_body : m_bodies)
     {
-        if(t_body->contains(mousePos))
+        if (t_body->contains(mousePos))
         {
             t_body->setPosition(mousePos);
             break;

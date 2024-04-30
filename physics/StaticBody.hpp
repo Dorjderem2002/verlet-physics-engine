@@ -7,6 +7,7 @@ class StaticBody : public PhysicsBody {
 public:
     StaticBody();
     StaticBody(sf::Vector2f p, float radius);
+    StaticBody(sf::Vector2f p, float radius, sf::Color t_color);
     StaticBody(float radius);
     void update(float dt) override;
     void draw(sf::RenderWindow& win) override;

@@ -42,9 +42,10 @@ int main()
     // Physics
     World world;
     world.burstRate = 1;
-    world.maxObject = 200;
+    world.maxObject = 500;
     world.sections = 5;
     world.type = ALGORITHM::GRID_MULTI;
+    world.genBodies = false;
     world.setSubStep(6);
     world.ballRadius = 200;
     world.recordPositions = false;
@@ -55,7 +56,7 @@ int main()
     {
         world.ballRadius = 200;
         world.setSubStep(1);
-        world.maxObject = 200;
+        world.maxObject = 10;
     }
 
     world.init();

@@ -27,8 +27,19 @@ StaticBody::StaticBody(sf::Vector2f p, float radius)
     setPosition(p);
 }
 
+StaticBody::StaticBody(sf::Vector2f p, float radius, sf::Color t_color)
+{
+    m_r = radius;
+    // m_shape.setRadius(m_r);
+    m_shape.setSize(sf::Vector2f(m_r * 2, m_r * 2));
+    m_shape.setFillColor(t_color);
+    m_shape.setOrigin(m_r, m_r);
+    setPosition(p);
+}
+
 void StaticBody::update(float dt)
 {
+    setPosition(m_pos);
 }
 
 void StaticBody::draw(sf::RenderWindow &win)

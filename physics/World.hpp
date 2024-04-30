@@ -6,6 +6,7 @@
 
 #include "PhysicsBody.hpp"
 #include "ThreadPool.hpp"
+#include "Linker.hpp"
 
 #include "../misc/CSVWriter.hpp"
 
@@ -52,6 +53,7 @@ public:
     torch::jit::script::Module torchModule;
     bool useML = false;
     sf::Vector2f m_shooterPos = sf::Vector2f(500,200);
+    bool genBodies = true;
 private:
     int m_winWidth = 8000;
     int m_winHeight = 8000;
@@ -62,6 +64,7 @@ private:
     float m_frame_dt = 0.0f;
     sf::Vector2f m_gravity = sf::Vector2f(0.0f, 10000.0f);
     std::vector<PhysicsBody*> m_bodies;
+    std::vector<Linker*> m_linkers;
     sf::Texture m_blur;
 
     int m_gridWidth, m_gridHeight;
