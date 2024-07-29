@@ -3,3 +3,4 @@ build/*
 images/DS_Store
 CMakeFiles
 ml/data.csv
+.vscode
