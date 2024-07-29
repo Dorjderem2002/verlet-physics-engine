@@ -3,9 +3,9 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-#include "PhysicsBody.hpp"
+#include "body/PhysicsBody.hpp"
 #include "ThreadPool.hpp"
-#include "Linker.hpp"
+#include "body/Linker.hpp"
 
 #include "../misc/CSVWriter.hpp"
 
@@ -35,7 +35,6 @@ public:
     void resolveCollisionMultithread();
     void solveCollisionGridInRange(int start, int end);
     void handleLocalGridCollision(int k, int y, int x);
-    void resolveCollisionNaiveML();
     void update();
     void draw(sf::RenderWindow &window);
 
@@ -43,6 +42,7 @@ public:
     void setSubStep(int count);
 
     void controlBody(sf::Vector2f mousePos);
+    void add_body(std::vector<PhysicsBody *> &t_bodies, std::vector<Linker *> &t_linkers);
 
 public:
     ALGORITHM type;
@@ -52,13 +52,12 @@ public:
     int burstRate = 2;
     bool recordPositions = false;
     sf::Vector2f m_shooterPos = sf::Vector2f(500, 200);
-    bool genBodies = true;
+    bool genBodies = false;
 
 private:
-    int m_winWidth = 8000;
-    int m_winHeight = 8000;
+    int m_winWidth = 1000;
+    int m_winHeight = 1000;
     int m_sub_steps = 6;
-    int m_objCounter = 0;
     float m_counter = 0, m_t = 0;
     float m_interval = 0.001f;
     float m_frame_dt = 0.0f;

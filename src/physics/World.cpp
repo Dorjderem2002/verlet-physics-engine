@@ -1,6 +1,6 @@
 #include "World.hpp"
-#include "KinematicBody.hpp"
-#include "StaticBody.hpp"
+#include "body/KinematicBody.hpp"
+#include "body/StaticBody.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -66,48 +66,41 @@ void World::init()
 
     // linker init
 
-    {
-        m_objCounter++;
-        m_shooterPos.x = rand() % 4000;
-        m_shooterPos.y = rand() % 4000;
-        StaticBody *tBody1 =
-            new StaticBody(m_shooterPos, ballRadius, getRainbow(m_t));
-        tBody1->setTexture(&m_blur);
-        m_bodies.push_back(tBody1);
-        m_objCounter++;
-        m_shooterPos.x = rand() % 4000;
-        m_shooterPos.y = rand() % 4000;
-        KinematicBody *tBody2 =
-            new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
-        tBody2->setTexture(&m_blur);
-        m_bodies.push_back(tBody2);
-        Linker *tempLink = new Linker(tBody1, tBody2, 400);
-        m_linkers.push_back(tempLink);
-        KinematicBody *last = tBody2;
-        for (int i = 0; i < 10; i++)
-        {
-            m_objCounter++;
-            m_shooterPos.x = rand() % 4000;
-            m_shooterPos.y = rand() % 4000;
-            KinematicBody *tBody3 =
-                new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
-            tBody3->setTexture(&m_blur);
-            m_bodies.push_back(tBody3);
-            Linker *tempLink1 = new Linker(last, tBody3, 400);
-            m_linkers.push_back(tempLink1);
-            last = tBody3;
-        }
-    }
+    // {
+    //     m_shooterPos.x = rand() % 4000;
+    //     m_shooterPos.y = rand() % 4000;
+    //     StaticBody *tBody1 =
+    //         new StaticBody(m_shooterPos, ballRadius, getRainbow(m_t));
+    //     tBody1->setTexture(&m_blur);
+    //     m_bodies.push_back(tBody1);
+    //     m_shooterPos.x = rand() % 4000;
+    //     m_shooterPos.y = rand() % 4000;
+    //     KinematicBody *tBody2 =
+    //         new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
+    //     tBody2->setTexture(&m_blur);
+    //     m_bodies.push_back(tBody2);
+    //     Linker *tempLink = new Linker(tBody1, tBody2, 400);
+    //     m_linkers.push_back(tempLink);
+    //     KinematicBody *last = tBody2;
+    //     for (int i = 0; i < 10; i++)
+    //     {
+    //         m_shooterPos.x = rand() % 4000;
+    //         m_shooterPos.y = rand() % 4000;
+    //         KinematicBody *tBody3 =
+    //             new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
+    //         tBody3->setTexture(&m_blur);
+    //         m_bodies.push_back(tBody3);
+    //         Linker *tempLink1 = new Linker(last, tBody3, 400);
+    //         m_linkers.push_back(tempLink1);
+    //         last = tBody3;
+    //     }
+    // }
 
+    type = ALGORITHM::NAIVE;
     int diameter = ballRadius * 2;
     m_gridWidth = m_winWidth / diameter + 1;
     m_gridHeight = m_winHeight / diameter + 1;
     m_grid = triple_vector(m_gridHeight + 2, double_vector(m_gridWidth + 2));
-
-    m_csv.enableAutoNewRow(12);
-    m_csv << "body_1_old_x" << "body_1_old_y" << "body_2_old_x" << "body_2_old_y";
-    m_csv << "body_1_x" << "body_1_y" << "body_2_x" << "body_2_y";
-    m_csv << "body_1_new_x" << "body_1_new_y" << "body_2_new_x" << "body_2_new_y";
 }
 
 void World::update()
@@ -116,12 +109,12 @@ void World::update()
 
     m_counter += m_frame_dt;
     m_t += 0.001f;
-    if (genBodies && m_counter > m_interval && m_objCounter < maxObject)
+    if (genBodies && m_counter > m_interval && (int)m_bodies.size() < maxObject)
     {
         for (int i = 0; i < burstRate; ++i)
         {
             m_counter = 0.0f;
-            m_objCounter++;
+            ;
             m_shooterPos.x = rand() % 4000;
             m_shooterPos.y = rand() % 4000;
             KinematicBody *tBody =
@@ -217,7 +210,7 @@ void World::draw(sf::RenderWindow &window)
     // }
 }
 
-int World::getBodyCount() { return m_objCounter; }
+int World::getBodyCount() { return (int)m_bodies.size(); }
 
 void World::setSubStep(int count) { m_sub_steps = count; }
 
@@ -230,6 +223,18 @@ void World::controlBody(sf::Vector2f mousePos)
             t_body->setPosition(mousePos);
             break;
         }
+    }
+}
+
+void World::add_body(std::vector<PhysicsBody *> &t_bodies, std::vector<Linker *> &t_linkers)
+{
+    for (auto t_body : t_bodies)
+    {
+        m_bodies.push_back(t_body);
+    }
+    for (auto t_link : t_linkers)
+    {
+        m_linkers.push_back(t_link);
     }
 }
 
@@ -429,5 +434,5 @@ void World::handleLocalGridCollision(int k, int y, int x)
 
 World::~World()
 {
-    m_csv.writeToFile("data.csv");
+    // m_csv.writeToFile("data.csv");
 }

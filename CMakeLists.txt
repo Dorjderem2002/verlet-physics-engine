@@ -8,7 +8,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")
 
 # Find SFML package
 find_package(SFML COMPONENTS graphics system window REQUIRED)
-find_package(TGUI 1 REQUIRED)
 
 # Gather source files
 file(GLOB SOURCES 
@@ -16,6 +15,7 @@ file(GLOB SOURCES
     "src/misc/*.cpp"
     "src/utils/*.cpp"
     "src/physics/*.cpp"
+    "src/physics/*/*.cpp"
     "src/app/*.cpp"
     "src/state/*/*.cpp"
 )
@@ -28,5 +28,4 @@ target_link_libraries(main
     sfml-graphics 
     sfml-system 
     sfml-window
-    TGUI::TGUI
 )
