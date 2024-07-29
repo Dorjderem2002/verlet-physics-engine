@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "../physics/World.hpp"
+#include "../state/state/State.hpp"
 
 class App
 {
@@ -22,11 +23,9 @@ private:
     // SFML
     sf::ContextSettings settings;
     sf::RenderWindow *window;
-    sf::View view;
-    sf::Text text;
     sf::Font font;
     sf::Clock dtClock;
 
-    // PHYSICS
-    World world;
+    // State
+    State *m_curr_state;
 };
