@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(SFML COMPONENTS graphics system window REQUIRED)
 
 # Include all source files from the current directory and the "physics" subdirectory
-file(GLOB SOURCES "*.cpp" "physics/*.cpp")
+file(GLOB SOURCES "src/*.cpp" "src/physics/*.cpp" "src/app/*.cpp")
 
 # Add executable target
 add_executable(main ${SOURCES})
