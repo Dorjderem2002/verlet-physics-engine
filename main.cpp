@@ -1,6 +1,4 @@
 #include <SFML/Graphics.hpp>
-#include <torch/script.h>
-
 #include <vector>
 #include <cstring>
 #include <iostream>
@@ -9,20 +7,6 @@
 
 int main()
 {
-    torch::jit::script::Module module;
-
-    try
-    {
-        // Deserialize the ScriptModule from a file using torch::jit::load().
-        module = torch::jit::load("model.pt");
-    }
-    catch (const c10::Error &e)
-    {
-        std::cerr << "Error loading the model.\n";
-    }
-
-    module.eval();
-
     sf::ContextSettings settings;
     // settings.antialiasingLevel = 16.0;
     sf::RenderWindow window(sf::VideoMode(800, 800), "Performance balls", sf::Style::Default, settings);
@@ -42,22 +26,12 @@ int main()
     // Physics
     World world;
     world.burstRate = 1;
-    world.maxObject = 500;
+    world.maxObject = 5000;
     world.sections = 5;
-    world.type = ALGORITHM::GRID_MULTI;
+    world.type = ALGORITHM::NAIVE;
     world.genBodies = false;
     world.setSubStep(6);
     world.ballRadius = 200;
-    world.recordPositions = false;
-    world.torchModule = module;
-    world.useML = true;
-
-    if (world.useML)
-    {
-        world.ballRadius = 200;
-        world.setSubStep(1);
-        world.maxObject = 10;
-    }
 
     world.init();
 

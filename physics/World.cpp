@@ -2,8 +2,6 @@
 #include "KinematicBody.hpp"
 #include "StaticBody.hpp"
 
-#include <torch/torch.h>
-
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -144,10 +142,7 @@ void World::update()
         switch (type)
         {
         case NAIVE:
-            if (!useML)
-                resolveCollisionNaive();
-            else
-                resolveCollisionNaiveML();
+            resolveCollisionNaive();
             break;
         case SORT:
             resolveCollisionSort();
@@ -316,69 +311,6 @@ void World::resolveCollisionNaive()
     }
 }
 
-void World::resolveCollisionNaiveML()
-{
-    std::vector<torch::Tensor> tensors;
-    std::vector<std::pair<int, int>> index_pairs;
-    int numberOfBody = m_bodies.size();
-
-    auto dist = [](sf::Vector2f a, sf::Vector2f b) -> float
-    {
-        float dx = a.x - b.x, dy = a.y - b.y;
-        return sqrt(dx * dx + dy * dy);
-    };
-
-    for (int i = 0; i < numberOfBody; i++)
-    {
-        for (int j = i + 1; j < numberOfBody; j++)
-        {
-            if (m_bodies[i]->isColliding(m_bodies[j]))
-            {
-                if (!m_bodies[i]->isKinematic())
-                    m_bodies[i]->resolveCollision(m_bodies[j]);
-                else
-                {
-                    sf::Vector2f old_k = m_bodies[i]->getPrevPosition();
-                    sf::Vector2f pos_k = m_bodies[i]->getPosition();
-                    sf::Vector2f old_h = m_bodies[j]->getPrevPosition();
-                    sf::Vector2f pos_h = m_bodies[j]->getPosition();
-
-                    torch::Tensor input_tensor = torch::tensor({old_k.x,
-                                                                old_k.y,
-                                                                old_h.x,
-                                                                old_h.y,
-                                                                pos_k.x,
-                                                                pos_k.y,
-                                                                pos_h.x,
-                                                                pos_h.y,
-                                                                dist(pos_k, pos_h)})
-                                                     .reshape({1, 9});
-                    tensors.push_back(input_tensor);
-                    index_pairs.emplace_back(i, j);
-                }
-            }
-        }
-    }
-
-    if (!tensors.empty())
-    {
-        torch::Tensor batch_input_tensor = torch::cat(tensors, 0); // Concatenate on the first dimension
-        torch::Tensor output = torchModule.forward({batch_input_tensor}).toTensor();
-
-        // Apply outputs
-        for (size_t i = 0; i < index_pairs.size(); ++i)
-        {
-            int k = index_pairs[i].first;
-            int h = index_pairs[i].second;
-            auto output_slice = output.slice(0, i, i + 1);
-            std::vector<float> output_vector(output_slice.data_ptr<float>(), output_slice.data_ptr<float>() + output_slice.numel());
-
-            m_bodies[k]->setPosition(sf::Vector2f(output_vector[0], output_vector[1]));
-            m_bodies[h]->setPosition(sf::Vector2f(output_vector[2], output_vector[3]));
-        }
-    }
-}
-
 void World::resolveCollisionGrid()
 {
     int diameter = ballRadius * 2;
@@ -453,10 +385,7 @@ void World::solveCollisionGridInRange(int start, int end)
         {
             for (int k : m_grid[i][j])
             {
-                if (!useML)
-                    handleLocalGridCollision(k, i, j);
-                else
-                    handleLocalGridCollisionWithML(k, i, j);
+                handleLocalGridCollision(k, i, j);
             }
         }
     }
@@ -492,78 +421,6 @@ void World::handleLocalGridCollision(int k, int y, int x)
                             m_csv << m_bodies[h]->getPosition().x << m_bodies[h]->getPosition().y;
                         }
                     }
-                }
-            }
-        }
-    }
-}
-
-void World::handleLocalGridCollisionWithML(int k, int y, int x)
-{
-    std::vector<torch::Tensor> tensors;
-    std::vector<std::pair<int, int>> index_pairs;
-
-    auto dist = [](sf::Vector2f a, sf::Vector2f b) -> float
-    {
-        float dx = a.x - b.x, dy = a.y - b.y;
-        return sqrt(dx * dx + dy * dy);
-    };
-    for (int i = -1; i <= 1; i++)
-    {
-        for (int j = -1; j <= 1; j++)
-        {
-            for (int h : m_grid[y + i][x + j])
-            {
-                if (k != h && m_bodies[k]->isColliding(m_bodies[h]))
-                {
-                    if (!m_bodies[k]->isKinematic())
-                    {
-                        m_bodies[k]->resolveCollision(m_bodies[h]);
-                    }
-                    else
-                    {
-                        sf::Vector2f old_k = m_bodies[k]->getPrevPosition();
-                        sf::Vector2f pos_k = m_bodies[k]->getPosition();
-                        sf::Vector2f old_h = m_bodies[h]->getPrevPosition();
-                        sf::Vector2f pos_h = m_bodies[h]->getPosition();
-
-                        torch::Tensor input_tensor = torch::tensor({old_k.x, old_k.y, old_h.x, old_h.y, pos_k.x, pos_k.y, pos_h.x, pos_h.y, dist(pos_k, pos_h)}).reshape({1, 9});
-                        tensors.push_back(input_tensor);
-                        index_pairs.emplace_back(k, h);
-
-                        // std::vector<torch::jit::IValue> inputs;
-                        // sf::Vector2f old_k = m_bodies[k]->getPrevPosition();
-                        // sf::Vector2f pos_k = m_bodies[k]->getPosition();
-                        // sf::Vector2f old_h = m_bodies[k]->getPrevPosition();
-                        // sf::Vector2f pos_h = m_bodies[h]->getPosition();
-
-                        // auto push_item = torch::tensor({old_k.x, old_k.y, old_h.x, old_h.y, pos_k.x, pos_k.y, pos_h.x, pos_h.y}).reshape({1, 8});
-                        // inputs.push_back(push_item);
-
-                        // output
-                        // torch::Tensor output;
-                        // output = torchModule.forward(inputs).toTensor();
-                        // std::vector<float> output_vector(output.data_ptr<float>(), output.data_ptr<float>() + output.numel());
-                        // m_bodies[k]->setPosition(sf::Vector2f(output_vector[0], output_vector[1]));
-                        // m_bodies[h]->setPosition(sf::Vector2f(output_vector[2], output_vector[3]));
-                    }
-                }
-            }
-            if (!tensors.empty())
-            {
-                torch::Tensor batch_input_tensor = torch::cat(tensors, 0); // Concatenate on the first dimension
-                torch::Tensor output = torchModule.forward({batch_input_tensor}).toTensor();
-
-                // Apply outputs
-                for (size_t i = 0; i < index_pairs.size(); ++i)
-                {
-                    int k = index_pairs[i].first;
-                    int h = index_pairs[i].second;
-                    auto output_slice = output.slice(0, i, i + 1);
-                    std::vector<float> output_vector(output_slice.data_ptr<float>(), output_slice.data_ptr<float>() + output_slice.numel());
-
-                    m_bodies[k]->setPosition(sf::Vector2f(output_vector[0], output_vector[1]));
-                    m_bodies[h]->setPosition(sf::Vector2f(output_vector[2], output_vector[3]));
                 }
             }
         }
