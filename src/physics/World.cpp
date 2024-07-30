@@ -128,10 +128,6 @@ void World::update()
     {
         applyGravity();
         applyConstraint();
-        for (Linker *i_linker : m_linkers)
-        {
-            i_linker->update();
-        }
         switch (type)
         {
         case NAIVE:
@@ -152,6 +148,10 @@ void World::update()
         }
     }
     updatePosition(sub_dt);
+    for (Linker *i_linker : m_linkers)
+    {
+        i_linker->update();
+    }
 }
 
 void World::applyGravity()

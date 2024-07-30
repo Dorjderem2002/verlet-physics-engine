@@ -8,6 +8,7 @@
 #include "../state/State.hpp"
 #include "../../physics/World.hpp"
 #include "../../physics/shapes/KinematicSquare.hpp"
+#include "../../physics/shapes/KinematicTriangle.hpp"
 
 class ShapesState : public State
 {
