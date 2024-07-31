@@ -48,7 +48,7 @@ void World::init()
     m_linkers.reserve(1000);
     
     type = ALGORITHM::NAIVE;
-    int diameter = ballRadius * 2;
+    int diameter = 100;
     m_gridWidth = m_winWidth / diameter + 1;
     m_gridHeight = m_winHeight / diameter + 1;
     m_grid = triple_vector(m_gridHeight + 2, double_vector(m_gridWidth + 2));
