@@ -6,12 +6,13 @@
 #include <iostream>
 
 #include "../state/State.hpp"
-#include "../../physics/World.hpp"
+#include "../Library.hpp"
 
-class BlankState : public State
+
+class PolygonState : public State
 {
 public:
-    BlankState();
+    PolygonState();
     void init(sf::RenderWindow *t_window, sf::Font &t_font) override;
     void update() override;
     void fixed_update() override;

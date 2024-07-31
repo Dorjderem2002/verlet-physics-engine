@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "../physics/World.hpp"
-#include "../state/state/State.hpp"
+#include "state/state/State.hpp"
 
 class App
 {

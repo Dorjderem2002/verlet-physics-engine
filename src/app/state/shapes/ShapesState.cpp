@@ -1,14 +1,13 @@
-#include "BlankState.hpp"
-#include "../../utils/utils.hpp"
+#include "ShapesState.hpp"
 
-BlankState::BlankState()
+ShapesState::ShapesState()
 {
 }
 
-void BlankState::init(sf::RenderWindow *t_window, sf::Font &t_font)
+void ShapesState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 {
     m_window = t_window;
-    m_view = sf::View(sf::FloatRect(-1000, -1000, 10000, 10000));
+    m_view = sf::View(sf::FloatRect(0, 0, 1000, 1000));
     m_window->setFramerateLimit(60);
     m_window->setView(m_view);
 
@@ -18,10 +17,12 @@ void BlankState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     m_text.setCharacterSize(200);
 
     // Physics
+
+    m_world.setSubStep(60);
     m_world.init();
 }
 
-void BlankState::update()
+void ShapesState::update()
 {
     sf::Time deltaTime = dtClock.restart();
     float dt = deltaTime.asSeconds();
@@ -33,18 +34,19 @@ void BlankState::update()
     move_camera(m_window, m_view);
 }
 
-void BlankState::fixed_update()
+void ShapesState::fixed_update()
 {
     m_world.update();
 }
 
-void BlankState::draw()
+void ShapesState::draw()
 {
     m_window->clear(sf::Color::Black);
+    m_world.draw(*m_window);
     m_window->display();
 }
 
-void BlankState::event(sf::Event ev)
+void ShapesState::event(sf::Event ev)
 {
     if (ev.type == sf::Event::Closed)
     {

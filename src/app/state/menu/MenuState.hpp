@@ -6,14 +6,12 @@
 #include <iostream>
 
 #include "../state/State.hpp"
-#include "../../physics/World.hpp"
-#include "../../physics/shapes/KinematicSquare.hpp"
-#include "../../physics/shapes/KinematicTriangle.hpp"
+#include "../Library.hpp"
 
-class ShapesState : public State
+class MenuState : public State
 {
 public:
-    ShapesState();
+    MenuState();
     void init(sf::RenderWindow *t_window, sf::Font &t_font) override;
     void update() override;
     void fixed_update() override;
@@ -27,6 +25,9 @@ private:
     sf::View m_view;
     sf::Text m_text;
     sf::Clock dtClock;
+
+    // UI
+    Button *chain_button, *shapes_button, *blank_button;
 
     // PHYSICS
     World m_world;

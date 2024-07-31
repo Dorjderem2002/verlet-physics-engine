@@ -46,56 +46,7 @@ void World::init()
 
     m_bodies.reserve(20000);
     m_linkers.reserve(1000);
-
-    // static body init
-
-    // float tr = ballRadius;
-    // for (int cnt = 0; cnt < 6; cnt++)
-    // {
-    //     sf::Vector2f basePos = sf::Vector2f(rand() % m_winWidth, rand() % m_winHeight);
-    //     for (int i = 0; i < 4; i++)
-    //     {
-    //         for (int j = 0; j < 15; j++)
-    //         {
-    //             StaticBody *staticTemp = new StaticBody(sf::Vector2f(basePos.x + j * tr * 2.0f, basePos.y + i * tr), tr);
-    //             staticTemp->setTexture(&m_blur);
-    //             m_bodies.push_back(staticTemp);
-    //         }
-    //     }
-    // }
-
-    // linker init
-
-    // {
-    //     m_shooterPos.x = rand() % 4000;
-    //     m_shooterPos.y = rand() % 4000;
-    //     StaticBody *tBody1 =
-    //         new StaticBody(m_shooterPos, ballRadius, getRainbow(m_t));
-    //     tBody1->setTexture(&m_blur);
-    //     m_bodies.push_back(tBody1);
-    //     m_shooterPos.x = rand() % 4000;
-    //     m_shooterPos.y = rand() % 4000;
-    //     KinematicBody *tBody2 =
-    //         new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
-    //     tBody2->setTexture(&m_blur);
-    //     m_bodies.push_back(tBody2);
-    //     Linker *tempLink = new Linker(tBody1, tBody2, 400);
-    //     m_linkers.push_back(tempLink);
-    //     KinematicBody *last = tBody2;
-    //     for (int i = 0; i < 10; i++)
-    //     {
-    //         m_shooterPos.x = rand() % 4000;
-    //         m_shooterPos.y = rand() % 4000;
-    //         KinematicBody *tBody3 =
-    //             new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
-    //         tBody3->setTexture(&m_blur);
-    //         m_bodies.push_back(tBody3);
-    //         Linker *tempLink1 = new Linker(last, tBody3, 400);
-    //         m_linkers.push_back(tempLink1);
-    //         last = tBody3;
-    //     }
-    // }
-
+    
     type = ALGORITHM::NAIVE;
     int diameter = ballRadius * 2;
     m_gridWidth = m_winWidth / diameter + 1;
@@ -109,21 +60,6 @@ void World::update()
 
     m_counter += m_frame_dt;
     m_t += 0.001f;
-    if (genBodies && m_counter > m_interval && (int)m_bodies.size() < maxObject)
-    {
-        for (int i = 0; i < burstRate; ++i)
-        {
-            m_counter = 0.0f;
-            ;
-            m_shooterPos.x = rand() % 4000;
-            m_shooterPos.y = rand() % 4000;
-            KinematicBody *tBody =
-                new KinematicBody(m_shooterPos, ballRadius, getRainbow(m_t));
-            tBody->setVelocity(sf::Vector2f(0, 0), sub_dt);
-            tBody->setTexture(&m_blur);
-            m_bodies.push_back(tBody);
-        }
-    }
     for (int i = 0; i < m_sub_steps; i++)
     {
         applyGravity();
@@ -132,9 +68,6 @@ void World::update()
         {
         case NAIVE:
             resolveCollisionNaive();
-            break;
-        case SORT:
-            resolveCollisionSort();
             break;
         case GRID:
             resolveCollisionGrid();
@@ -180,34 +113,34 @@ void World::applyConstraint()
 
 void World::draw(sf::RenderWindow &window)
 {
-    sf::VertexArray vertices;
-    vertices.resize(4 * m_bodies.size());
-    vertices.setPrimitiveType(sf::Quads);
-    for (int i = 0; i < m_bodies.size(); ++i)
-    {
-        int x = m_bodies[i]->getPosition().x - ballRadius;
-        int y = m_bodies[i]->getPosition().y - ballRadius;
-        int r = ballRadius * 2;
-        // Define the position and texture coordinates for each vertex
-        sf::Vertex topLeft(sf::Vector2f(x, y), m_bodies[i]->getColor());
-        sf::Vertex topRight(sf::Vector2f(x + r, y), m_bodies[i]->getColor());
-        sf::Vertex bottomRight(sf::Vector2f(x + r, y + r), m_bodies[i]->getColor());
-        sf::Vertex bottomLeft(sf::Vector2f(x, y + r), m_bodies[i]->getColor());
-        topLeft.texCoords = sf::Vector2f(0.0f, 0.0f);
-        topRight.texCoords = sf::Vector2f(m_blur.getSize().x, 0.0f);
-        bottomRight.texCoords = sf::Vector2f(m_blur.getSize().x, m_blur.getSize().y);
-        bottomLeft.texCoords = sf::Vector2f(0.0f, m_blur.getSize().y);
-        vertices[4 * i] = topLeft;
-        vertices[4 * i + 1] = topRight;
-        vertices[4 * i + 2] = bottomRight;
-        vertices[4 * i + 3] = bottomLeft;
-    }
-    window.draw(vertices, &m_blur);
-    // old slow code
-    // for (PhysicsBody *b : m_bodies)
+    // sf::VertexArray vertices;
+    // vertices.resize(4 * m_bodies.size());
+    // vertices.setPrimitiveType(sf::Quads);
+    // for (int i = 0; i < m_bodies.size(); ++i)
     // {
-    //     b->draw(window);
+    //     int x = m_bodies[i]->getPosition().x - m_bodies[i]->getRadius();
+    //     int y = m_bodies[i]->getPosition().y - m_bodies[i]->getRadius();
+    //     int r = m_bodies[i]->getRadius() * 2;
+    //     // Define the position and texture coordinates for each vertex
+    //     sf::Vertex topLeft(sf::Vector2f(x, y), m_bodies[i]->getColor());
+    //     sf::Vertex topRight(sf::Vector2f(x + r, y), m_bodies[i]->getColor());
+    //     sf::Vertex bottomRight(sf::Vector2f(x + r, y + r), m_bodies[i]->getColor());
+    //     sf::Vertex bottomLeft(sf::Vector2f(x, y + r), m_bodies[i]->getColor());
+    //     topLeft.texCoords = sf::Vector2f(0.0f, 0.0f);
+    //     topRight.texCoords = sf::Vector2f(m_blur.getSize().x, 0.0f);
+    //     bottomRight.texCoords = sf::Vector2f(m_blur.getSize().x, m_blur.getSize().y);
+    //     bottomLeft.texCoords = sf::Vector2f(0.0f, m_blur.getSize().y);
+    //     vertices[4 * i] = topLeft;
+    //     vertices[4 * i + 1] = topRight;
+    //     vertices[4 * i + 2] = bottomRight;
+    //     vertices[4 * i + 3] = bottomLeft;
     // }
+    // window.draw(vertices, &m_blur);
+    // old slow code
+    for (PhysicsBody *b : m_bodies)
+    {
+        b->draw(window);
+    }
 }
 
 int World::getBodyCount() { return (int)m_bodies.size(); }
@@ -238,61 +171,19 @@ void World::add_body(std::vector<PhysicsBody *> &t_bodies, std::vector<Linker *>
     }
 }
 
-void World::resolveCollisionSort()
+void World::add_body(std::vector<PhysicsBody *> &t_bodies)
 {
-    int numberOfBody = m_bodies.size();
-    sort(m_bodies.begin(), m_bodies.end(), [](PhysicsBody *lhs, PhysicsBody *rhs)
-         { return (lhs->getPosition().x < rhs->getPosition().x); });
-
-    for (int i = 0; i < numberOfBody; i++)
+    for (auto t_body : t_bodies)
     {
-        for (int j = i + 1; j < numberOfBody; j++)
-        {
-            float pos_i = m_bodies[i]->getPosition().x;
-            float pos_j = m_bodies[j]->getPosition().x;
-            float ri = m_bodies[i]->getRadius();
-            float rj = m_bodies[j]->getRadius();
-            if (intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2))
-            {
-                if (m_bodies[i]->isColliding(m_bodies[j]))
-                {
-                    if (!m_bodies[i]->isKinematic())
-                        m_bodies[i]->resolveCollision(m_bodies[j]);
-                    else
-                        m_bodies[j]->resolveCollision(m_bodies[i]);
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
+        m_bodies.push_back(t_body);
     }
-    sort(m_bodies.begin(), m_bodies.end(), [](PhysicsBody *lhs, PhysicsBody *rhs)
-         { return (lhs->getPosition().y < rhs->getPosition().y); });
-    for (int i = 0; i < numberOfBody; i++)
+}
+
+void World::add_body(std::vector<Linker *> &t_linkers)
+{
+    for (auto t_link : t_linkers)
     {
-        for (int j = i + 1; j < numberOfBody; j++)
-        {
-            float pos_i = m_bodies[i]->getPosition().x;
-            float pos_j = m_bodies[j]->getPosition().x;
-            float ri = m_bodies[i]->getRadius();
-            float rj = m_bodies[j]->getRadius();
-            if (intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2))
-            {
-                if (m_bodies[i]->isColliding(m_bodies[j]))
-                {
-                    if (!m_bodies[i]->isKinematic())
-                        m_bodies[i]->resolveCollision(m_bodies[j]);
-                    else
-                        m_bodies[j]->resolveCollision(m_bodies[i]);
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
+        m_linkers.push_back(t_link);
     }
 }
 

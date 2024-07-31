@@ -6,9 +6,8 @@
 class StaticBody : public PhysicsBody {
 public:
     StaticBody();
-    StaticBody(sf::Vector2f p, float radius);
-    StaticBody(sf::Vector2f p, float radius, sf::Color t_color);
-    StaticBody(float radius);
+    StaticBody(sf::Vector2f p, std::vector<sf::Vector2f> points);
+    StaticBody(sf::Vector2f p, std::vector<sf::Vector2f> points, sf::Color c);
     void update(float dt) override;
     void draw(sf::RenderWindow& win) override;
     bool isColliding(PhysicsBody* target) override;
@@ -21,14 +20,15 @@ public:
     void addVelocity(sf::Vector2f v, float dt) override;
     sf::Vector2f getPosition() override;
     sf::Vector2f getPrevPosition() override;
-    float getRadius() override;
     bool isKinematic() override;
     sf::Color getColor() override;
 
     void setTexture(sf::Texture *t);
     ~StaticBody();
 private:
-    sf::RectangleShape m_shape;
+    std::vector<sf::Vector2f> points;
+    float angle;
+    std::vector<sf::Vector2f> model;
+    sf::ConvexShape m_shape;
     sf::Vector2f m_pos;
-    float m_r;
 };

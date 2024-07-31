@@ -1,10 +1,10 @@
-#include "MenuState.hpp"
+#include "BlankState.hpp"
 
-MenuState::MenuState()
+BlankState::BlankState()
 {
 }
 
-void MenuState::init(sf::RenderWindow *t_window, sf::Font &t_font)
+void BlankState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 {
     m_window = t_window;
     m_view = sf::View(sf::FloatRect(0, 0, 1000, 1000));
@@ -16,17 +16,11 @@ void MenuState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     m_text.setFillColor(sf::Color::White);
     m_text.setCharacterSize(200);
 
-    chain_button = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
-    blank_button = new Button(50, 200, sf::Color::White, sf::Color::Red, t_font, "Blank");
-    // shapes_button = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
-    // chainButton = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
-    // chainButton = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
-
     // Physics
     m_world.init();
 }
 
-void MenuState::update()
+void BlankState::update()
 {
     sf::Time deltaTime = dtClock.restart();
     float dt = deltaTime.asSeconds();
@@ -35,26 +29,21 @@ void MenuState::update()
     int bCount = m_world.getBodyCount();
     m_text.setString("FPS: " + std::to_string(fps) + "\nBody count: " + std::to_string(bCount));
 
-    chain_button->update(m_window);
-    blank_button->update(m_window);
-
     move_camera(m_window, m_view);
 }
 
-void MenuState::fixed_update()
+void BlankState::fixed_update()
 {
     m_world.update();
 }
 
-void MenuState::draw()
+void BlankState::draw()
 {
     m_window->clear(sf::Color::Black);
-    chain_button->draw(m_window);
-    blank_button->draw(m_window);
     m_window->display();
 }
 
-void MenuState::event(sf::Event ev)
+void BlankState::event(sf::Event ev)
 {
     if (ev.type == sf::Event::Closed)
     {

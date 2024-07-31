@@ -6,14 +6,12 @@
 #include <iostream>
 
 #include "../state/State.hpp"
-#include "../../physics/World.hpp"
-#include "../../utils/utils.hpp"
-#include "../../ui/button.hpp"
+#include "../Library.hpp"
 
-class MenuState : public State
+class ShapesState : public State
 {
 public:
-    MenuState();
+    ShapesState();
     void init(sf::RenderWindow *t_window, sf::Font &t_font) override;
     void update() override;
     void fixed_update() override;
@@ -27,10 +25,6 @@ private:
     sf::View m_view;
     sf::Text m_text;
     sf::Clock dtClock;
-
-    // UI
-    Button *chain_button;
-    Button *blank_button;
 
     // PHYSICS
     World m_world;
