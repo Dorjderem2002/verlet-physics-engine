@@ -1,38 +1,40 @@
 #include "StaticBody.hpp"
 
 #include <cmath>
-#include <iostream>
 
 StaticBody::StaticBody()
 {
+    // m_shape.setRadius(10.0f);
+    m_shape.setSize(sf::Vector2f(10, 10));
 }
 
-StaticBody::StaticBody(sf::Vector2f p, int n, int l)
+StaticBody::StaticBody(float radius)
 {
-    m_shape.setPointCount(n);
-    m_points.resize(n);
-    float theta = 2 * M_PI / n;
-    for (int i = 0; i < n; i++)
-    {
-        m_points[i] = sf::Vector2f(l * cos(i * theta), l * sin(i * theta));
-        m_shape.setPoint(i, m_points[i]);
-    }
+    m_r = radius;
+    // m_shape.setRadius(m_r);
+    m_shape.setSize(sf::Vector2f(m_r * 2, m_r * 2));
     m_shape.setFillColor(sf::Color::White);
-    m_pos = p;
+    m_shape.setOrigin(m_r, m_r);
+    m_shape.setPosition(0, 0);
+}
+StaticBody::StaticBody(sf::Vector2f p, float radius)
+{
+    m_r = radius;
+    // m_shape.setRadius(m_r);
+    m_shape.setSize(sf::Vector2f(m_r * 2, m_r * 2));
+    m_shape.setFillColor(sf::Color::White);
+    m_shape.setOrigin(m_r, m_r);
+    setPosition(p);
 }
 
-StaticBody::StaticBody(sf::Vector2f p, int n, int l, sf::Color c)
+StaticBody::StaticBody(sf::Vector2f p, float radius, sf::Color t_color)
 {
-    m_shape.setPointCount(n);
-    m_points.resize(n);
-    float theta = 2 * M_PI / n;
-    for (int i = 0; i < n; i++)
-    {
-        m_points[i] = sf::Vector2f(l * cos(i * theta), l * sin(i * theta));
-        m_shape.setPoint(i, m_points[i]);
-    }
-    m_shape.setFillColor(c);
-    m_pos = p;
+    m_r = radius;
+    // m_shape.setRadius(m_r);
+    m_shape.setSize(sf::Vector2f(m_r * 2, m_r * 2));
+    m_shape.setFillColor(t_color);
+    m_shape.setOrigin(m_r, m_r);
+    setPosition(p);
 }
 
 void StaticBody::update(float dt)
@@ -40,22 +42,20 @@ void StaticBody::update(float dt)
     setPosition(m_pos);
 }
 
-void StaticBody::wallCollide(int w, int h)
-{
-}
-
 void StaticBody::resolveCollision(PhysicsBody *target)
 {
+    sf::Vector2f diff = m_pos - target->getPosition();
+    float len_diff = (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
+    float len_r = m_r + target->getRadius();
+    float d = len_diff - len_r;
+    sf::Vector2f nVec = diff / len_diff;
+    sf::Vector2f newPos = target->getPosition() + nVec * (d);
+    target->setPosition(newPos);
 }
 
 bool StaticBody::isKinematic()
 {
     return false;
-}
-
-void StaticBody::setTexture(sf::Texture *t)
-{
-    m_shape.setTexture(t);
 }
 
 StaticBody::~StaticBody()

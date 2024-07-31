@@ -75,7 +75,11 @@ Below is an example of how you can instruct your audience on installing and sett
    ```sh
    cmake ../ && make
    ```
-3. Run the application
+3. Copy necessary resources to build files
+   ```sh
+   cp -R ../resource/ ./resource
+   ```
+4. Run the application
    ```js
    ./main
    ```

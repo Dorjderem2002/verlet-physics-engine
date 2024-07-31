@@ -7,12 +7,11 @@ class StaticBody : public PhysicsBody
 {
 public:
     StaticBody();
-    StaticBody(sf::Vector2f pos, int n, int l);
-    StaticBody(sf::Vector2f pos, int n, int l, sf::Color c);
+    StaticBody(sf::Vector2f p, float radius);
+    StaticBody(sf::Vector2f p, float radius, sf::Color t_color);
+    StaticBody(float radius);
     void update(float dt);
-    void wallCollide(int w, int h);
     void resolveCollision(PhysicsBody *target);
     bool isKinematic();
-    void setTexture(sf::Texture *t);
     ~StaticBody();
 };

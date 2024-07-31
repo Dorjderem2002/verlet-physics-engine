@@ -1,5 +1,4 @@
 #include "Linker.hpp"
-#include "KinematicBody.hpp"
 #include <SFML/Graphics.hpp>
 
 Linker::Linker(PhysicsBody *t_body_1, PhysicsBody *t_body_2, float t_dist)

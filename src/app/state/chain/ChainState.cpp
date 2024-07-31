@@ -1,5 +1,4 @@
 #include "ChainState.hpp"
-#include "../../../utils/utils.hpp"
 
 ChainState::ChainState()
 {
@@ -8,21 +7,23 @@ ChainState::ChainState()
 void ChainState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 {
     m_window = t_window;
-    m_view = sf::View(sf::FloatRect(0, 0, 1000, 1000));
+    m_view = sf::View(sf::FloatRect(-1000, -1000, 10000, 10000));
     m_window->setFramerateLimit(60);
     m_window->setView(m_view);
 
     // Font + m_text
     m_text.setFont(t_font);
     m_text.setFillColor(sf::Color::White);
-    m_text.setCharacterSize(20);
+    m_text.setCharacterSize(200);
 
     // Physics
-
+    m_world.burstRate = 1;
     m_world.maxObject = 5000;
+    m_world.sections = 5;
     m_world.type = ALGORITHM::NAIVE;
+    m_world.genBodies = false;
     m_world.setSubStep(6);
-    // m_world.ballRadius = 10;
+    m_world.ballRadius = 200;
 
     m_world.init();
 }

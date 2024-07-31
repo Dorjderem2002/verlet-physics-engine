@@ -7,7 +7,7 @@ BlankState::BlankState()
 void BlankState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 {
     m_window = t_window;
-    m_view = sf::View(sf::FloatRect(0, 0, 1000, 1000));
+    m_view = sf::View(sf::FloatRect(-1000, -1000, 10000, 10000));
     m_window->setFramerateLimit(60);
     m_window->setView(m_view);
 

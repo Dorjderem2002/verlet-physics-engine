@@ -1,5 +1,5 @@
 #include "App.hpp"
-#include "state/States.hpp"
+#include "state/shapes/ShapesState.hpp"
 
 App::App()
 {
@@ -7,7 +7,7 @@ App::App()
 
 void App::run()
 {
-    m_curr_state = new PolygonState();
+    m_curr_state = new ShapesState();
     init(800, 800);
     while (window->isOpen())
     {

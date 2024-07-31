@@ -5,7 +5,7 @@
 
 #include "body/PhysicsBody.hpp"
 #include "ThreadPool.hpp"
-#include "body/Linker.hpp"
+#include "linker/Linker.hpp"
 
 #include "../misc/CSVWriter.hpp"
 
@@ -15,6 +15,7 @@
 enum ALGORITHM
 {
     NAIVE,
+    SORT,
     GRID,
     GRID_MULTI
 };
@@ -29,6 +30,7 @@ public:
     void updatePosition(float dt);
     void applyConstraint();
     void resolveCollisionNaive();
+    void resolveCollisionSort();
     void resolveCollisionGrid();
     void resolveCollisionMultithread();
     void solveCollisionGridInRange(int start, int end);
@@ -41,8 +43,6 @@ public:
 
     void controlBody(sf::Vector2f mousePos);
     void add_body(std::vector<PhysicsBody *> &t_bodies, std::vector<Linker *> &t_linkers);
-    void add_body(std::vector<PhysicsBody *> &t_bodies);
-    void add_body(std::vector<Linker *> &t_linkers);
 
 public:
     ALGORITHM type;

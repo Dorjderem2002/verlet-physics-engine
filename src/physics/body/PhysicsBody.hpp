@@ -5,28 +5,26 @@
 class PhysicsBody
 {
 public:
-    void update(float dt);
-    void draw(sf::RenderWindow &win);
-    bool isColliding(PhysicsBody *target);
-    bool contains(sf::Vector2f loc);
-    void wallCollide(int w, int h);
-    void resolveCollision(PhysicsBody *target);
-    void setPosition(sf::Vector2f newPos);
-    void accelerate(sf::Vector2f a);
-    void setVelocity(sf::Vector2f v, float dt);
-    void addVelocity(sf::Vector2f v, float dt);
-    sf::Vector2f getPosition();
-    std::vector<sf::Vector2f> getPositionPoints();
-    std::vector<sf::Vector2f> getPoints();
-    sf::Vector2f getPrevPosition();
-    sf::Color getColor();
-    void setColor(sf::Color c);
-    void setOutline(float thickness);
-    bool isKinematic();
+    virtual void update(float dt);
+    virtual void draw(sf::RenderWindow &win);
+    virtual bool isColliding(PhysicsBody *target);
+    virtual bool contains(sf::Vector2f loc);
+    virtual void wallCollide(int w, int h);
+    virtual void resolveCollision(PhysicsBody *target);
+    virtual void setPosition(sf::Vector2f newPos);
+    virtual void accelerate(sf::Vector2f a);
+    virtual void setVelocity(sf::Vector2f v, float dt);
+    virtual void addVelocity(sf::Vector2f v, float dt);
+    virtual sf::Vector2f getPosition();
+    virtual sf::Vector2f getPrevPosition();
+    virtual float getRadius();
+    virtual bool isKinematic();
+    virtual sf::Color getColor();
+    void set_texture(sf::Texture* t);
 
 protected:
-    float m_angle;
-    std::vector<sf::Vector2f> m_points;
-    sf::ConvexShape m_shape;
-    sf::Vector2f m_pos, m_old;
+    sf::RectangleShape m_shape;
+    sf::Vector2f m_old;
+    sf::Vector2f m_pos;
+    float m_r;
 };

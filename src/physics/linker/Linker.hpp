@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PhysicsBody.hpp"
+#include "../body/PhysicsBody.hpp"
 
 class Linker
 {

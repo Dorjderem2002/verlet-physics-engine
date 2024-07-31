@@ -18,6 +18,19 @@ void ShapesState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 
     // Physics
 
+    // KinematicSquare square(100, 100, 100, 100, 10);
+
+    // m_world.add_body(square.m_bodies, square.m_linkers);
+
+    KinematicTriangle t1(sf::Vector2f(100, 100), sf::Vector2f(200, 200), sf::Vector2f(100, 200), 10);
+    KinematicTriangle t2(sf::Vector2f(200, 150), sf::Vector2f(300, 300), sf::Vector2f(200, 300), 10);
+    KinematicTriangle t3(sf::Vector2f(50, 100), sf::Vector2f(50, 200), sf::Vector2f(100, 150), 10);
+    // KinematicTriangle t4(sf::Vector2f(100, 100), sf::Vector2f(200, 200), sf::Vector2f(100, 200), 10);
+    m_world.add_body(t1.m_bodies, t1.m_linkers);
+    m_world.add_body(t2.m_bodies, t2.m_linkers);
+    m_world.add_body(t3.m_bodies, t3.m_linkers);
+    // m_world.add_body(t4.m_bodies, t4.m_linkers);
+
     m_world.setSubStep(60);
     m_world.init();
 }
@@ -36,6 +49,12 @@ void ShapesState::update()
 
 void ShapesState::fixed_update()
 {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    {
+        sf::Vector2i pixelPos = sf::Mouse::getPosition(*m_window);
+        sf::Vector2f m_worldPos = m_window->mapPixelToCoords(pixelPos);
+        m_world.controlBody(m_worldPos);
+    }
     m_world.update();
 }
 

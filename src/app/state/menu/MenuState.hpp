@@ -6,7 +6,9 @@
 #include <iostream>
 
 #include "../state/State.hpp"
-#include "../Library.hpp"
+#include <physics/World.hpp>
+#include <utils/utils.hpp>
+#include <ui/button.hpp>
 
 class MenuState : public State
 {
@@ -27,7 +29,8 @@ private:
     sf::Clock dtClock;
 
     // UI
-    Button *chain_button, *shapes_button, *blank_button;
+    Button *chain_button;
+    Button *blank_button;
 
     // PHYSICS
     World m_world;

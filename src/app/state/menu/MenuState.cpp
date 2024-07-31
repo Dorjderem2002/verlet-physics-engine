@@ -18,8 +18,8 @@ void MenuState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 
     chain_button = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
     blank_button = new Button(50, 200, sf::Color::White, sf::Color::Red, t_font, "Blank");
-    shapes_button = new Button(50, 300, sf::Color::White, sf::Color::Red, t_font, "Shapes");
-    // chainButton = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "");
+    // shapes_button = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
+    // chainButton = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
     // chainButton = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
 
     // Physics
@@ -37,7 +37,6 @@ void MenuState::update()
 
     chain_button->update(m_window);
     blank_button->update(m_window);
-    shapes_button->update(m_window);
 
     move_camera(m_window, m_view);
 }
@@ -52,7 +51,6 @@ void MenuState::draw()
     m_window->clear(sf::Color::Black);
     chain_button->draw(m_window);
     blank_button->draw(m_window);
-    shapes_button->draw(m_window);
     m_window->display();
 }
 
