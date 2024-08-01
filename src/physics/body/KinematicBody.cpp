@@ -9,9 +9,9 @@ KinematicBody::KinematicBody()
     m_old = m_pos;
     m_r = 10;
     m_acc = {0, 0};
+    m_shape.setOrigin(m_r, m_r);
     m_shape.setPosition(sf::Vector2f(m_pos.x, m_pos.y));
     m_shape.setSize(sf::Vector2f(m_r * 2, m_r * 2));
-    m_shape.setOrigin(m_r, m_r);
     m_shape.setFillColor(sf::Color(255, 255, 255, 255));
 }
 
@@ -21,9 +21,9 @@ KinematicBody::KinematicBody(sf::Vector2f p, float radius, sf::Color color)
     m_old = m_pos;
     m_r = radius;
     m_acc = {0, 0};
+    m_shape.setOrigin(m_r, m_r);
     m_shape.setPosition(m_pos);
     m_shape.setSize(sf::Vector2f(m_r * 2, m_r * 2));
-    m_shape.setOrigin(m_r, m_r);
     m_shape.setFillColor(color);
 }
 

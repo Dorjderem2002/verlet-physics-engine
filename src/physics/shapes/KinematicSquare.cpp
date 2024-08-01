@@ -2,91 +2,110 @@
 
 #include <iostream>
 
-KinematicSquare::KinematicSquare(int x, int y, int w, int h, int step)
+KinematicSquare::KinematicSquare(int x, int y, int w, int h, int radius)
 {
     sf::Vector2f base_pos(x, y);
-    for (int i = 0; i < h / step; i++)
-    {
-        for (int j = 0; j < w / step; j++)
-        {
-            sf::Vector2f offset(i * step * 3, j * step * 3);
-            KinematicBody *t_body = new KinematicBody(base_pos + offset, step, sf::Color::White);
-            m_bodies.push_back(t_body);
-        }
-    }
+    KinematicBody *top_left = new KinematicBody(base_pos, radius, sf::Color::White);
+    KinematicBody *top_right = new KinematicBody(base_pos + sf::Vector2f(w, 0), radius, sf::Color::White);
+    KinematicBody *bottom_left = new KinematicBody(base_pos + sf::Vector2f(0, h), radius, sf::Color::White);
+    KinematicBody *bottom_right = new KinematicBody(base_pos + sf::Vector2f(w, h), radius, sf::Color::White);
 
-    for (int i = 0; i < h / step; i++)
-    {
-        for (int j = 0; j < w / step; j++)
-        {
-            int loc = i * (w / step) + j;
-            int left = i * (w / step) + j - 1;
-            int right = i * (w / step) + j + 1;
-            int bottom = (i + 1) * (w / step) + j;
-            int top = (i - 1) * (w / step) + j;
-            int top_left = (i - 1) * (w / step) + j - 1;
-            int top_right = (i - 1) * (w / step) + j + 1;
-            int bottom_left = (i + 1) * (w / step) + j - 1;
-            int bottom_right = (i + 1) * (w / step) + j + 1;
+    m_bodies.push_back(top_left);
+    m_bodies.push_back(top_right);
+    m_bodies.push_back(bottom_left);
+    m_bodies.push_back(bottom_right);
 
-            PhysicsBody *curr = m_bodies[loc];
-            float dist = step * 3;
-            // Link to left side
-            if (j > 0)
-            {
-                PhysicsBody *t_body = m_bodies[left];
-                Linker *tempLink = new Linker(curr, t_body, dist);
-                m_linkers.push_back(tempLink);
-            }
-            // Link to right side
-            if (j < (w / step) - 1)
-            {
-                PhysicsBody *t_body = m_bodies[right];
-                Linker *tempLink = new Linker(curr, t_body, dist);
-                m_linkers.push_back(tempLink);
-            }
-            // Link to top side
-            if (i > 0)
-            {
-                PhysicsBody *t_body = m_bodies[top];
-                Linker *tempLink = new Linker(curr, t_body, dist);
-                m_linkers.push_back(tempLink);
-            }
-            // Link to bottom side
-            if (i < (h / step) - 1)
-            {
-                PhysicsBody *t_body = m_bodies[bottom];
-                Linker *tempLink = new Linker(curr, t_body, dist);
-                m_linkers.push_back(tempLink);
-            }
-            // Link to top left side
-            if (i > 0 && j > 0)
-            {
-                PhysicsBody *t_body = m_bodies[top_left];
-                Linker *tempLink = new Linker(curr, t_body, dist);
-                m_linkers.push_back(tempLink);
-            }
-            // Link to top right side
-            if (i > 0 && j < (w / step) - 1)
-            {
-                PhysicsBody *t_body = m_bodies[top_right];
-                Linker *tempLink = new Linker(curr, t_body, dist);
-                m_linkers.push_back(tempLink);
-            }
-            // Link to bottom left side
-            if (i < (h / step) - 1 && j > 0)
-            {
-                PhysicsBody *t_body = m_bodies[bottom_left];
-                Linker *tempLink = new Linker(curr, t_body, dist);
-                m_linkers.push_back(tempLink);
-            }
-            // Link to bottom right side
-            if (i < (h / step) - 1 && j < (w / step) - 1)
-            {
-                PhysicsBody *t_body = m_bodies[bottom_right];
-                Linker *tempLink = new Linker(curr, t_body, dist);
-                m_linkers.push_back(tempLink);
-            }
-        }
-    }
+    Linker *left = new Linker(top_left, bottom_left, h);
+    Linker *diag = new Linker(top_left, bottom_right, sqrtf(w * w + h * h));
+    Linker *bottom = new Linker(bottom_left, bottom_right, w);
+    Linker *right = new Linker(top_right, bottom_right, h);
+    Linker *top = new Linker(top_left, top_right, w);
+
+    m_linkers.push_back(left);
+    m_linkers.push_back(diag);
+    m_linkers.push_back(bottom);
+    m_linkers.push_back(right);
+    m_linkers.push_back(top);
+}
+
+KinematicSquare::KinematicSquare(int x, int y, int w, int h, int radius, sf::Color c)
+{
+    sf::Vector2f base_pos(x, y);
+    KinematicBody *top_left = new KinematicBody(base_pos, radius, c);
+    KinematicBody *top_right = new KinematicBody(base_pos + sf::Vector2f(w, 0), radius, c);
+    KinematicBody *bottom_left = new KinematicBody(base_pos + sf::Vector2f(0, h), radius, c);
+    KinematicBody *bottom_right = new KinematicBody(base_pos + sf::Vector2f(w, h), radius, c);
+
+    m_bodies.push_back(top_left);
+    m_bodies.push_back(top_right);
+    m_bodies.push_back(bottom_left);
+    m_bodies.push_back(bottom_right);
+
+    Linker *left = new Linker(top_left, bottom_left, h);
+    Linker *diag = new Linker(top_left, bottom_right, sqrtf(w * w + h * h));
+    Linker *bottom = new Linker(bottom_left, bottom_right, w);
+    Linker *right = new Linker(top_right, bottom_right, h);
+    Linker *top = new Linker(top_left, top_right, w);
+
+    m_linkers.push_back(left);
+    m_linkers.push_back(diag);
+    m_linkers.push_back(bottom);
+    m_linkers.push_back(right);
+    m_linkers.push_back(top);
+}
+
+KinematicSquare::KinematicSquare(sf::Vector2f pos, sf::Vector2f size, int radius)
+{
+    sf::Vector2f base_pos = pos;
+    float w = size.x;
+    float h = size.y;
+    KinematicBody *top_left = new KinematicBody(base_pos, radius, sf::Color::White);
+    KinematicBody *top_right = new KinematicBody(base_pos + sf::Vector2f(w, 0), radius, sf::Color::White);
+    KinematicBody *bottom_left = new KinematicBody(base_pos + sf::Vector2f(0, h), radius, sf::Color::White);
+    KinematicBody *bottom_right = new KinematicBody(base_pos + sf::Vector2f(w, h), radius, sf::Color::White);
+
+    m_bodies.push_back(top_left);
+    m_bodies.push_back(top_right);
+    m_bodies.push_back(bottom_left);
+    m_bodies.push_back(bottom_right);
+
+    Linker *left = new Linker(top_left, bottom_left, h);
+    Linker *diag = new Linker(top_left, bottom_right, sqrtf(w * w + h * h));
+    Linker *bottom = new Linker(bottom_left, bottom_right, w);
+    Linker *right = new Linker(top_right, bottom_right, h);
+    Linker *top = new Linker(top_left, top_right, w);
+
+    m_linkers.push_back(left);
+    m_linkers.push_back(diag);
+    m_linkers.push_back(bottom);
+    m_linkers.push_back(right);
+    m_linkers.push_back(top);
+}
+
+KinematicSquare::KinematicSquare(sf::Vector2f pos, sf::Vector2f size, int radius, sf::Color c)
+{
+    sf::Vector2f base_pos = pos;
+    float w = size.x;
+    float h = size.y;
+    KinematicBody *top_left = new KinematicBody(base_pos, radius, c);
+    KinematicBody *top_right = new KinematicBody(base_pos + sf::Vector2f(w, 0), radius, c);
+    KinematicBody *bottom_left = new KinematicBody(base_pos + sf::Vector2f(0, h), radius, c);
+    KinematicBody *bottom_right = new KinematicBody(base_pos + sf::Vector2f(w, h), radius, c);
+
+    m_bodies.push_back(top_left);
+    m_bodies.push_back(top_right);
+    m_bodies.push_back(bottom_left);
+    m_bodies.push_back(bottom_right);
+
+    Linker *left = new Linker(top_left, bottom_left, h);
+    Linker *diag = new Linker(top_left, bottom_right, sqrtf(w * w + h * h));
+    Linker *bottom = new Linker(bottom_left, bottom_right, w);
+    Linker *right = new Linker(top_right, bottom_right, h);
+    Linker *top = new Linker(top_left, top_right, w);
+
+    m_linkers.push_back(left);
+    m_linkers.push_back(diag);
+    m_linkers.push_back(bottom);
+    m_linkers.push_back(right);
+    m_linkers.push_back(top);
 }

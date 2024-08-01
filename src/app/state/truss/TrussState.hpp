@@ -8,12 +8,14 @@
 #include "../state/State.hpp"
 #include <physics/World.hpp>
 #include <utils/utils.hpp>
-#include <ui/button.hpp>
+#include <physics/body/StaticBody.hpp>
+#include <physics/body/KinematicBody.hpp>
+#include <physics/linker/Linker.hpp>
 
-class MenuState : public State
+class TrussState : public State
 {
 public:
-    MenuState();
+    TrussState();
     void init(sf::RenderWindow *t_window, sf::Font &t_font) override;
     void update() override;
     void fixed_update() override;
@@ -27,14 +29,9 @@ private:
     sf::View m_view;
     sf::Text m_text;
     sf::Clock dtClock;
-    sf::Font *font;
 
-    // UI
-    Button *chain_button;
-    Button *blank_button;
-    Button *shapes_button;
-    Button *chain_shoot_button;
-    Button *truss_button;
+    // GAME SETTINGS
+    bool start = false;
 
     // PHYSICS
     World m_world;

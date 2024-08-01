@@ -31,4 +31,7 @@ private:
 
     // PHYSICS
     World m_world;
+
+    // OTHER
+    KinematicSquare *square;
 };

@@ -35,15 +35,17 @@ public:
         return button_rect.contains(mapped_mouse_pos.x, mapped_mouse_pos.y);
     }
 
-    void update(sf::RenderWindow *window)
+    bool update(sf::RenderWindow *window)
     {
         if (isMouseOver(window) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             shape.setFillColor(hoverColor);
+            return true;
         }
         else
         {
             shape.setFillColor(idleColor);
+            return false;
         }
     }
 

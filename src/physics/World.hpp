@@ -42,24 +42,25 @@ public:
     void setSubStep(int count);
 
     void controlBody(sf::Vector2f mousePos);
-    void add_body(std::vector<PhysicsBody *> &t_bodies, std::vector<Linker *> &t_linkers);
+    void add_bodies(std::vector<PhysicsBody *> &t_bodies, std::vector<Linker *> &t_linkers);
+    void add_body(PhysicsBody *t_body);
+    void add_linker(Linker *t_linker);
 
 public:
     ALGORITHM type;
     int sections = 6;
-    int ballRadius = 10;
     int maxObject = 100000;
     int burstRate = 2;
     bool recordPositions = false;
     sf::Vector2f m_shooterPos = sf::Vector2f(500, 200);
     bool genBodies = false;
+    bool draw_lines = true;
 
 private:
     int m_winWidth = 1000;
     int m_winHeight = 1000;
     int m_sub_steps = 6;
     float m_counter = 0, m_t = 0;
-    float m_interval = 0.001f;
     float m_frame_dt = 0.0f;
     sf::Vector2f m_gravity = sf::Vector2f(0.0f, 10000.0f);
     std::vector<PhysicsBody *> m_bodies;

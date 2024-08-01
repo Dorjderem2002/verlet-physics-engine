@@ -35,7 +35,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![alt text](images/ss.png)
+![Boxed](images/boxes.png)
+![Chain](images/long_chain.png)
 
 I love high performance computing so I chose to build physics engine using C++. The project touched various algorithms with many pros and cons. I also get a chance to write multithreading to improve performance. Below is the algorithms I have implemented so far for collision detection.
 
@@ -93,12 +94,10 @@ Below is an example of how you can instruct your audience on installing and sett
 - [x] Circle Collision
 - [x] Multithreading
 - [x] Chain
+- [x] Force
 - [x] More shapes using circles
-- [ ] SAT collision
+- [ ] Trusses
 - [ ] Soft Body
-- [ ] Convex polygon
-- [ ] Force
-- [ ] Mechanics
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
 

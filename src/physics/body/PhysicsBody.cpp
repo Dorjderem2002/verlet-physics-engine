@@ -44,6 +44,13 @@ void PhysicsBody::setPosition(sf::Vector2f newPos)
     m_shape.setPosition(newPos);
 }
 
+void PhysicsBody::set_position_old(sf::Vector2f new_pos)
+{
+    m_pos = new_pos;
+    m_old = new_pos;
+    m_shape.setPosition(new_pos);
+}
+
 void PhysicsBody::accelerate(sf::Vector2f a)
 {
 }
@@ -78,7 +85,7 @@ bool PhysicsBody::isKinematic()
 
 sf::Color PhysicsBody::getColor()
 {
-    return sf::Color(255, 255, 255, 255);
+    return m_shape.getFillColor();
 }
 
 void PhysicsBody::set_texture(sf::Texture *t)

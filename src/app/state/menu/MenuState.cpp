@@ -1,4 +1,6 @@
 #include "MenuState.hpp"
+#include "../States.hpp"
+#include <app/StateManager.hpp>
 
 MenuState::MenuState()
 {
@@ -12,15 +14,16 @@ void MenuState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     m_window->setView(m_view);
 
     // Font + m_text
+    font = &t_font;
     m_text.setFont(t_font);
     m_text.setFillColor(sf::Color::White);
     m_text.setCharacterSize(200);
 
     chain_button = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
     blank_button = new Button(50, 200, sf::Color::White, sf::Color::Red, t_font, "Blank");
-    // shapes_button = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
-    // chainButton = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
-    // chainButton = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
+    shapes_button = new Button(50, 300, sf::Color::White, sf::Color::Red, t_font, "Shapes");
+    chain_shoot_button = new Button(50, 400, sf::Color::White, sf::Color::Red, t_font, "Chain Shoot");
+    truss_button = new Button(50, 500, sf::Color::White, sf::Color::Red, t_font, "Truss");
 
     // Physics
     m_world.init();
@@ -35,8 +38,36 @@ void MenuState::update()
     int bCount = m_world.getBodyCount();
     m_text.setString("FPS: " + std::to_string(fps) + "\nBody count: " + std::to_string(bCount));
 
-    chain_button->update(m_window);
-    blank_button->update(m_window);
+    if (chain_button->update(m_window))
+    {
+        StateManager::curr_state = new ChainState();
+        StateManager::curr_state->init(m_window, *font);
+    }
+    if (blank_button->update(m_window))
+    {
+        StateManager::curr_state = new BlankState();
+        StateManager::curr_state->init(m_window, *font);
+    }
+    if (shapes_button->update(m_window))
+    {
+        StateManager::curr_state = new ShapesState();
+        StateManager::curr_state->init(m_window, *font);
+    }
+    if (chain_shoot_button->update(m_window))
+    {
+        StateManager::curr_state = new ChainShooter();
+        StateManager::curr_state->init(m_window, *font);
+    }
+    if (truss_button->update(m_window))
+    {
+        StateManager::curr_state = new TrussState();
+        StateManager::curr_state->init(m_window, *font);
+    }
+    // if (blank_button->update(m_window))
+    // {
+    //     StateManager::curr_state = new BlankState();
+    //     StateManager::curr_state->init(m_window, *font);
+    // }
 
     move_camera(m_window, m_view);
 }
@@ -51,6 +82,9 @@ void MenuState::draw()
     m_window->clear(sf::Color::Black);
     chain_button->draw(m_window);
     blank_button->draw(m_window);
+    shapes_button->draw(m_window);
+    chain_shoot_button->draw(m_window);
+    truss_button->draw(m_window);
     m_window->display();
 }
 

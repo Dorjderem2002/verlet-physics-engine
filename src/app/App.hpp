@@ -24,7 +24,4 @@ private:
     sf::RenderWindow *window;
     sf::Font font;
     sf::Clock dtClock;
-
-    // State
-    State *m_curr_state;
 };

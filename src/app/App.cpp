@@ -1,5 +1,6 @@
 #include "App.hpp"
-#include "state/shapes/ShapesState.hpp"
+#include "state/States.hpp"
+#include <app/StateManager.hpp>
 
 App::App()
 {
@@ -7,7 +8,7 @@ App::App()
 
 void App::run()
 {
-    m_curr_state = new ShapesState();
+    StateManager::curr_state = new MenuState();
     init(800, 800);
     while (window->isOpen())
     {
@@ -32,25 +33,25 @@ void App::init(int w_size, int h_size)
     font.loadFromFile("resource/robot.ttf");
 
     // State
-    m_curr_state->init(window, font);
+    StateManager::curr_state->init(window, font);
 }
 
 void App::update()
 {
-    m_curr_state->update();
+    StateManager::curr_state->update();
 }
 
 void App::fixed_update()
 {
-    m_curr_state->fixed_update();
+    StateManager::curr_state->fixed_update();
 }
 
 void App::draw()
 {
-    m_curr_state->draw();
+    StateManager::curr_state->draw();
 }
 
 void App::event(sf::Event ev)
 {
-    m_curr_state->event(ev);
+    StateManager::curr_state->event(ev);
 }
