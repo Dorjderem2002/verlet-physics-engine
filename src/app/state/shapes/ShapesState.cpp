@@ -34,7 +34,7 @@ void ShapesState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     // m_world.add_bodies(t3.m_bodies, t3.m_linkers);
     // m_world.add_body(t4.m_bodies, t4.m_linkers);
 
-    m_world.type = ALGORITHM::NAIVE;
+    m_world.algorithm = ALGORITHM::NAIVE;
     m_world.draw_lines = true;
     m_world.setSubStep(20);
     m_world.init();

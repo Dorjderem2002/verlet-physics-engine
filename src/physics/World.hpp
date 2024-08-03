@@ -3,9 +3,10 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
+#include "utils/utils.hpp"
 #include "body/PhysicsBody.hpp"
-#include "ThreadPool.hpp"
 #include "linker/Linker.hpp"
+#include "collision/Collision.hpp"
 
 #include "../misc/CSVWriter.hpp"
 
@@ -29,17 +30,12 @@ public:
     void applyGravity();
     void updatePosition(float dt);
     void applyConstraint();
-    void resolveCollisionNaive();
-    void resolveCollisionSort();
-    void resolveCollisionGrid();
-    void resolveCollisionMultithread();
-    void solveCollisionGridInRange(int start, int end);
-    void handleLocalGridCollision(int k, int y, int x);
     void update();
     void draw(sf::RenderWindow &window);
 
     int getBodyCount();
     void setSubStep(int count);
+    void set_gravity(sf::Vector2f g);
 
     void controlBody(sf::Vector2f mousePos);
     void add_bodies(std::vector<PhysicsBody *> &t_bodies, std::vector<Linker *> &t_linkers);
@@ -47,7 +43,7 @@ public:
     void add_linker(Linker *t_linker);
 
 public:
-    ALGORITHM type;
+    ALGORITHM algorithm;
     int sections = 6;
     int maxObject = 100000;
     int burstRate = 2;
@@ -69,7 +65,5 @@ private:
 
     int m_gridWidth, m_gridHeight;
     triple_vector m_grid;
-
-    ThreadPool *m_pool;
     CSVWriter m_csv;
 };

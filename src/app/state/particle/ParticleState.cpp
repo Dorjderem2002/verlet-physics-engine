@@ -1,10 +1,10 @@
-#include "BlankState.hpp"
+#include "ParticleState.hpp"
 
-BlankState::BlankState()
+ParticleState::ParticleState()
 {
 }
 
-void BlankState::init(sf::RenderWindow *t_window, sf::Font &t_font)
+void ParticleState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 {
     m_window = t_window;
     m_view = sf::View(sf::FloatRect(0, 0, 1000, 1000));
@@ -17,10 +17,21 @@ void BlankState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     m_text.setCharacterSize(20);
 
     // Physics
+
+    for (int i = 0; i < 2000; i++)
+    {
+        KinematicBody *b = new KinematicBody(sf::Vector2f(rand() % 1000, rand() % 1000), rand() % 5 + 1, sf::Color::White);
+        int force = 100000;
+        b->accelerate(sf::Vector2f(rand() % force - force / 2, rand() % force - force / 2));
+        m_world.add_body(b);
+    }
+
+    m_world.algorithm = ALGORITHM::GRID_MULTI;
+    m_world.set_gravity(sf::Vector2f(0, 0));
     m_world.init();
 }
 
-void BlankState::update()
+void ParticleState::update()
 {
     sf::Time deltaTime = dtClock.restart();
     float dt = deltaTime.asSeconds();
@@ -32,12 +43,12 @@ void BlankState::update()
     move_camera(m_window, m_view);
 }
 
-void BlankState::fixed_update()
+void ParticleState::fixed_update()
 {
     m_world.update();
 }
 
-void BlankState::draw()
+void ParticleState::draw()
 {
     m_window->clear(sf::Color::Black);
     m_world.draw(*m_window);
@@ -45,7 +56,7 @@ void BlankState::draw()
     m_window->display();
 }
 
-void BlankState::event(sf::Event ev)
+void ParticleState::event(sf::Event ev)
 {
     if (ev.type == sf::Event::Closed)
     {

@@ -8,12 +8,12 @@
 #include "../state/State.hpp"
 #include <physics/World.hpp>
 #include <utils/utils.hpp>
-#include <ui/button.hpp>
+#include <physics/body/KinematicBody.hpp>
 
-class MenuState : public State
+class ParticleState : public State
 {
 public:
-    MenuState();
+    ParticleState();
     void init(sf::RenderWindow *t_window, sf::Font &t_font) override;
     void update() override;
     void fixed_update() override;
@@ -27,15 +27,6 @@ private:
     sf::View m_view;
     sf::Text m_text;
     sf::Clock dtClock;
-    sf::Font *font;
-
-    // UI
-    Button *chain_button;
-    Button *blank_button;
-    Button *shapes_button;
-    Button *chain_shoot_button;
-    Button *truss_button;
-    Button *particle_button;
 
     // PHYSICS
     World m_world;

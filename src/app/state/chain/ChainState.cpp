@@ -20,7 +20,7 @@ void ChainState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     m_world.burstRate = 1;
     m_world.maxObject = 5000;
     m_world.sections = 5;
-    m_world.type = ALGORITHM::NAIVE;
+    m_world.algorithm = ALGORITHM::NAIVE;
     m_world.genBodies = false;
     m_world.setSubStep(6);
 

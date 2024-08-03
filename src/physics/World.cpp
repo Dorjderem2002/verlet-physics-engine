@@ -11,35 +11,12 @@
 #define triple_vector std::vector<std::vector<std::vector<int>>>
 #define double_vector std::vector<std::vector<int>>
 
-bool intersect(float x1, float x2, float y1, float y2)
-{
-    float a = std::max(x1, y1);
-    float b = std::min(x2, y2);
-    if (a > b)
-    {
-        return false;
-    }
-    return true;
-}
-
-sf::Color getRainbow(float m_t)
-{
-    const float r = std::sin(m_t);
-    const float g = std::sin(m_t + 0.33f * 2.0f * 3.142f);
-    const float b = std::sin(m_t + 0.66f * 2.0f * 3.142f);
-    return {static_cast<uint8_t>(255.0f * r * r),
-            static_cast<uint8_t>(255.0f * g * g),
-            static_cast<uint8_t>(255.0f * b * b)};
-}
-
 World::World()
 {
 }
 
 void World::init()
 {
-    m_pool = new ThreadPool(sections);
-
     m_blur.loadFromFile("resource/circle.png");
 
     m_frame_dt = 1.0f / 60.0f;
@@ -47,7 +24,6 @@ void World::init()
     m_bodies.reserve(20000);
     m_linkers.reserve(1000);
 
-    type = ALGORITHM::NAIVE;
     int diameter = 100 * 2;
     m_gridWidth = m_winWidth / diameter + 1;
     m_gridHeight = m_winHeight / diameter + 1;
@@ -64,22 +40,16 @@ void World::update()
     {
         applyGravity();
         applyConstraint();
-        switch (type)
+        switch (algorithm)
         {
         case NAIVE:
-            resolveCollisionNaive();
+            Collision::resolveCollisionNaive(m_bodies);
             break;
         case SORT:
-            resolveCollisionSort();
-            break;
-        case GRID:
-            resolveCollisionGrid();
-            break;
-        case GRID_MULTI:
-            resolveCollisionMultithread();
+            Collision::resolveCollisionSort(m_bodies);
             break;
         default:
-            resolveCollisionMultithread();
+            Collision::resolveCollisionNaive(m_bodies);
             break;
         }
     }
@@ -116,28 +86,7 @@ void World::applyConstraint()
 
 void World::draw(sf::RenderWindow &window)
 {
-    sf::VertexArray vertices;
-    vertices.resize(4 * m_bodies.size());
-    vertices.setPrimitiveType(sf::Quads);
-    for (int i = 0; i < (int)m_bodies.size(); ++i)
-    {
-        float x = m_bodies[i]->getPosition().x - m_bodies[i]->getRadius();
-        float y = m_bodies[i]->getPosition().y - m_bodies[i]->getRadius();
-        float r = m_bodies[i]->getRadius() * 2;
-        // Define the position and texture coordinates for each vertex
-        sf::Vertex topLeft(sf::Vector2f(x, y), m_bodies[i]->getColor());
-        sf::Vertex topRight(sf::Vector2f(x + r, y), m_bodies[i]->getColor());
-        sf::Vertex bottomRight(sf::Vector2f(x + r, y + r), m_bodies[i]->getColor());
-        sf::Vertex bottomLeft(sf::Vector2f(x, y + r), m_bodies[i]->getColor());
-        topLeft.texCoords = sf::Vector2f(0.0f, 0.0f);
-        topRight.texCoords = sf::Vector2f(m_blur.getSize().x, 0.0f);
-        bottomRight.texCoords = sf::Vector2f(m_blur.getSize().x, m_blur.getSize().y);
-        bottomLeft.texCoords = sf::Vector2f(0.0f, m_blur.getSize().y);
-        vertices[4 * i] = topLeft;
-        vertices[4 * i + 1] = topRight;
-        vertices[4 * i + 2] = bottomRight;
-        vertices[4 * i + 3] = bottomLeft;
-    }
+    sf::VertexArray vertices = generate_vertices(m_bodies, m_blur);
     window.draw(vertices, &m_blur);
     if (draw_lines)
     {
@@ -164,6 +113,11 @@ void World::draw(sf::RenderWindow &window)
 int World::getBodyCount() { return (int)m_bodies.size(); }
 
 void World::setSubStep(int count) { m_sub_steps = count; }
+
+void World::set_gravity(sf::Vector2f g)
+{
+    m_gravity = g;
+}
 
 void World::controlBody(sf::Vector2f mousePos)
 {
@@ -197,200 +151,6 @@ void World::add_body(PhysicsBody *t_body)
 void World::add_linker(Linker *t_linker)
 {
     m_linkers.push_back(t_linker);
-}
-
-void World::resolveCollisionSort()
-{
-    int numberOfBody = m_bodies.size();
-    sort(m_bodies.begin(), m_bodies.end(), [](PhysicsBody *lhs, PhysicsBody *rhs)
-         { return (lhs->getPosition().x < rhs->getPosition().x); });
-
-    for (int i = 0; i < numberOfBody; i++)
-    {
-        for (int j = i + 1; j < numberOfBody; j++)
-        {
-            float pos_i = m_bodies[i]->getPosition().x;
-            float pos_j = m_bodies[j]->getPosition().x;
-            float ri = m_bodies[i]->getRadius();
-            float rj = m_bodies[j]->getRadius();
-            if (intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2))
-            {
-                if (m_bodies[i]->isColliding(m_bodies[j]))
-                {
-                    if (!m_bodies[i]->isKinematic())
-                        m_bodies[i]->resolveCollision(m_bodies[j]);
-                    else
-                        m_bodies[j]->resolveCollision(m_bodies[i]);
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-    sort(m_bodies.begin(), m_bodies.end(), [](PhysicsBody *lhs, PhysicsBody *rhs)
-         { return (lhs->getPosition().y < rhs->getPosition().y); });
-    for (int i = 0; i < numberOfBody; i++)
-    {
-        for (int j = i + 1; j < numberOfBody; j++)
-        {
-            float pos_i = m_bodies[i]->getPosition().x;
-            float pos_j = m_bodies[j]->getPosition().x;
-            float ri = m_bodies[i]->getRadius();
-            float rj = m_bodies[j]->getRadius();
-            if (intersect(pos_i, pos_i + ri * 2, pos_j, pos_j + rj * 2))
-            {
-                if (m_bodies[i]->isColliding(m_bodies[j]))
-                {
-                    if (!m_bodies[i]->isKinematic())
-                        m_bodies[i]->resolveCollision(m_bodies[j]);
-                    else
-                        m_bodies[j]->resolveCollision(m_bodies[i]);
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-}
-
-void World::resolveCollisionNaive()
-{
-    int numberOfBody = m_bodies.size();
-    for (int i = 0; i < numberOfBody; i++)
-    {
-        for (int j = i + 1; j < numberOfBody; j++)
-        {
-            if (m_bodies[i]->isColliding(m_bodies[j]))
-            {
-                if (!m_bodies[i]->isKinematic())
-                    m_bodies[i]->resolveCollision(m_bodies[j]);
-                else
-                {
-                    m_bodies[j]->resolveCollision(m_bodies[i]);
-                }
-            }
-        }
-    }
-}
-
-void World::resolveCollisionGrid()
-{
-    int diameter = 100 * 2;
-    int numberOfBody = m_bodies.size();
-    for (int i = 0; i < m_gridHeight + 2; i++)
-        for (int j = 0; j < m_gridWidth + 2; j++)
-            m_grid[i][j].clear();
-
-    for (int i = 0; i < numberOfBody; i++)
-    {
-        sf::Vector2f pos = m_bodies[i]->getPosition();
-        int y = pos.y / diameter;
-        int x = pos.x / diameter;
-        m_grid[y + 1][x + 1].push_back(i);
-    }
-
-    for (int i = 1; i <= m_gridHeight; i++)
-    {
-        for (int j = 1; j <= m_gridWidth; j++)
-        {
-            for (int k : m_grid[i][j])
-            {
-                handleLocalGridCollision(k, i, j);
-            }
-        }
-    }
-}
-
-void World::resolveCollisionMultithread()
-{
-    int diameter = 100 * 2;
-    int numberOfBody = m_bodies.size();
-    for (int i = 0; i < m_gridHeight; i++)
-        for (int j = 0; j < m_gridWidth; j++)
-            m_grid[i][j].clear();
-
-    for (int i = 0; i < numberOfBody; i++)
-    {
-        sf::Vector2f pos = m_bodies[i]->getPosition();
-        int y = pos.y / diameter;
-        int x = pos.x / diameter;
-        m_grid[y + 1][x + 1].push_back(i);
-    }
-
-    for (int i = 1; i <= sections; i++)
-    {
-        m_pool->addTask([this, i]
-                        { this->solveCollisionGridInRange(m_gridWidth / (i - 1) + 1, m_gridWidth / i); });
-    }
-
-    m_pool->waitForCompletion();
-
-    // method to create thread every frame
-
-    // std::vector<std::thread> workers;
-    // for (int i = 1; i <= sections; i++)
-    // {
-    //     workers.emplace_back([this, i]
-    //                          { this->solveCollisionGridInRange(m_gridWidth / (i - 1) + 1, m_gridWidth / i); });
-    // }
-    // for (std::thread &w : workers)
-    // {
-    //     w.join();
-    // }
-}
-
-void World::solveCollisionGridInRange(int start, int end)
-{
-    for (int i = 1; i <= m_gridHeight; i++)
-    {
-        for (int j = start; j <= end; j++)
-        {
-            for (int k : m_grid[i][j])
-            {
-                handleLocalGridCollision(k, i, j);
-            }
-        }
-    }
-}
-
-void World::handleLocalGridCollision(int k, int y, int x)
-{
-    for (int i = -1; i <= 1; i++)
-    {
-        for (int j = -1; j <= 1; j++)
-        {
-            for (int h : m_grid[y + i][x + j])
-            {
-                if (k != h && m_bodies[k]->isColliding(m_bodies[h]))
-                {
-                    if (!m_bodies[k]->isKinematic())
-                    {
-                        m_bodies[k]->resolveCollision(m_bodies[h]);
-                    }
-                    else
-                    {
-                        if (recordPositions)
-                        {
-                            m_csv << m_bodies[k]->getPrevPosition().x << m_bodies[k]->getPrevPosition().y;
-                            m_csv << m_bodies[h]->getPrevPosition().x << m_bodies[h]->getPrevPosition().y;
-                            m_csv << m_bodies[k]->getPosition().x << m_bodies[k]->getPosition().y;
-                            m_csv << m_bodies[h]->getPosition().x << m_bodies[h]->getPosition().y;
-                        }
-                        m_bodies[h]->resolveCollision(m_bodies[k]);
-                        if (recordPositions)
-                        {
-                            m_csv << m_bodies[k]->getPosition().x << m_bodies[k]->getPosition().y;
-                            m_csv << m_bodies[h]->getPosition().x << m_bodies[h]->getPosition().y;
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 World::~World()

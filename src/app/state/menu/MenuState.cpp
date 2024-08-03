@@ -24,6 +24,7 @@ void MenuState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     shapes_button = new Button(50, 300, sf::Color::White, sf::Color::Red, t_font, "Shapes");
     chain_shoot_button = new Button(50, 400, sf::Color::White, sf::Color::Red, t_font, "Chain Shoot");
     truss_button = new Button(50, 500, sf::Color::White, sf::Color::Red, t_font, "Truss");
+    particle_button = new Button(50, 500, sf::Color::White, sf::Color::Red, t_font, "Particle");
 
     // Physics
     m_world.init();
@@ -63,11 +64,11 @@ void MenuState::update()
         StateManager::curr_state = new TrussState();
         StateManager::curr_state->init(m_window, *font);
     }
-    // if (blank_button->update(m_window))
-    // {
-    //     StateManager::curr_state = new BlankState();
-    //     StateManager::curr_state->init(m_window, *font);
-    // }
+    if (particle_button->update(m_window))
+    {
+        StateManager::curr_state = new ParticleState();
+        StateManager::curr_state->init(m_window, *font);
+    }
 
     move_camera(m_window, m_view);
 }
@@ -85,6 +86,7 @@ void MenuState::draw()
     shapes_button->draw(m_window);
     chain_shoot_button->draw(m_window);
     truss_button->draw(m_window);
+    particle_button->draw(m_window);
     m_window->display();
 }
 
