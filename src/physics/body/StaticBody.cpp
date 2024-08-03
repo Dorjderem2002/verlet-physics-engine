@@ -44,12 +44,12 @@ void StaticBody::update(float dt)
 
 void StaticBody::resolveCollision(PhysicsBody *target)
 {
-    sf::Vector2f diff = m_pos - target->getPosition();
+    sf::Vector2f diff = m_pos - target->get_position();
     float len_diff = (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
     float len_r = m_r + target->getRadius();
     float d = len_diff - len_r;
     sf::Vector2f nVec = diff / len_diff;
-    sf::Vector2f newPos = target->getPosition() + nVec * (d);
+    sf::Vector2f newPos = target->get_position() + nVec * (d);
     target->setPosition(newPos);
 }
 

@@ -14,7 +14,7 @@ void PhysicsBody::draw(sf::RenderWindow &win)
 
 bool PhysicsBody::isColliding(PhysicsBody *target)
 {
-    sf::Vector2f diff = m_pos - target->getPosition();
+    sf::Vector2f diff = m_pos - target->get_position();
     return m_r + target->getRadius() > (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
 }
 
@@ -29,12 +29,12 @@ bool PhysicsBody::contains(sf::Vector2f loc)
 
 void PhysicsBody::resolveCollision(PhysicsBody *target)
 {
-    sf::Vector2f diff = m_pos - target->getPosition();
+    sf::Vector2f diff = m_pos - target->get_position();
     float len_diff = (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
     float len_r = m_r + target->getRadius();
     float d = len_diff - len_r;
     sf::Vector2f nVec = diff / len_diff;
-    sf::Vector2f newPos = target->getPosition() + nVec * (d);
+    sf::Vector2f newPos = target->get_position() + nVec * (d);
     target->setPosition(newPos);
 }
 
@@ -63,7 +63,7 @@ void PhysicsBody::addVelocity(sf::Vector2f v, float dt)
 {
 }
 
-sf::Vector2f PhysicsBody::getPosition()
+sf::Vector2f PhysicsBody::get_position()
 {
     return m_pos;
 }

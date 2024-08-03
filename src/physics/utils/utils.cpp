@@ -7,8 +7,8 @@ sf::VertexArray generate_vertices(std::vector<PhysicsBody *> &bodies, sf::Textur
     vertices.setPrimitiveType(sf::Quads);
     for (int i = 0; i < (int)bodies.size(); ++i)
     {
-        float x = bodies[i]->getPosition().x - bodies[i]->getRadius();
-        float y = bodies[i]->getPosition().y - bodies[i]->getRadius();
+        float x = bodies[i]->get_position().x - bodies[i]->getRadius();
+        float y = bodies[i]->get_position().y - bodies[i]->getRadius();
         float r = bodies[i]->getRadius() * 2;
         // Define the position and texture coordinates for each vertex
         sf::Vertex topLeft(sf::Vector2f(x, y), bodies[i]->getColor());

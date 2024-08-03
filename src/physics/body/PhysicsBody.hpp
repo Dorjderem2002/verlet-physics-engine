@@ -16,7 +16,7 @@ public:
     virtual void accelerate(sf::Vector2f a);
     virtual void setVelocity(sf::Vector2f v, float dt);
     virtual void addVelocity(sf::Vector2f v, float dt);
-    virtual sf::Vector2f getPosition();
+    virtual sf::Vector2f get_position();
     virtual sf::Vector2f getPrevPosition();
     virtual float getRadius();
     virtual bool isKinematic();

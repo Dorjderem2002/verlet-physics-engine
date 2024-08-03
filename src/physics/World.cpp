@@ -23,11 +23,6 @@ void World::init()
 
     m_bodies.reserve(20000);
     m_linkers.reserve(1000);
-
-    int diameter = 100 * 2;
-    m_gridWidth = m_winWidth / diameter + 1;
-    m_gridHeight = m_winHeight / diameter + 1;
-    m_grid = triple_vector(m_gridHeight + 2, double_vector(m_gridWidth + 2));
 }
 
 void World::update()
@@ -42,11 +37,14 @@ void World::update()
         applyConstraint();
         switch (algorithm)
         {
-        case NAIVE:
+        case ALGORITHM::NAIVE:
             Collision::resolveCollisionNaive(m_bodies);
             break;
-        case SORT:
+        case ALGORITHM::SORT:
             Collision::resolveCollisionSort(m_bodies);
+            break;
+        case ALGORITHM::GRID:
+            Collision::resolveCollisionGrid(m_bodies, sections, sf::Vector2f(m_winWidth, m_winHeight));
             break;
         default:
             Collision::resolveCollisionNaive(m_bodies);
@@ -92,8 +90,8 @@ void World::draw(sf::RenderWindow &window)
     {
         for (int i = 0; i < (int)m_linkers.size(); i++)
         {
-            sf::Vector2f p1 = m_linkers[i]->m_body_1->getPosition();
-            sf::Vector2f p2 = m_linkers[i]->m_body_2->getPosition();
+            sf::Vector2f p1 = m_linkers[i]->m_body_1->get_position();
+            sf::Vector2f p2 = m_linkers[i]->m_body_2->get_position();
             sf::Color c1 = m_linkers[i]->m_body_1->getColor();
             sf::Color c2 = m_linkers[i]->m_body_2->getColor();
             sf::Vertex a(p1, (c1 == sf::Color::Transparent) ? sf::Color::White : c1);

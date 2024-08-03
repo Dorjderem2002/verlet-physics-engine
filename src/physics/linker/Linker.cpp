@@ -8,7 +8,7 @@ Linker::Linker(PhysicsBody *t_body_1, PhysicsBody *t_body_2, float t_dist)
 
 void Linker::update()
 {
-    const sf::Vector2f axis = m_body_1->getPosition() - m_body_2->getPosition();
+    const sf::Vector2f axis = m_body_1->get_position() - m_body_2->get_position();
     const float curr_dis = sqrt(axis.x * axis.x + axis.y * axis.y);
     const float diff = m_target_distance - curr_dis;
     sf::Vector2f dir = axis / curr_dis;
@@ -16,10 +16,10 @@ void Linker::update()
     dir.y *= diff * 0.5f;
     if (m_body_1->isKinematic())
     {
-        m_body_1->setPosition(m_body_1->getPosition() + dir);
+        m_body_1->setPosition(m_body_1->get_position() + dir);
     }
     if (m_body_2->isKinematic())
     {
-        m_body_2->setPosition(m_body_2->getPosition() - dir);
+        m_body_2->setPosition(m_body_2->get_position() - dir);
     }
 }

@@ -25,13 +25,13 @@ void ChainShooter::init(sf::RenderWindow *t_window, sf::Font &t_font)
 
     float chain_size = 20;
     float freedom = 30;
-    int n_chains = (anch2->getPosition().x - anch1->getPosition().x) / (chain_size * 2);
+    int n_chains = (anch2->get_position().x - anch1->get_position().x) / (chain_size * 2);
     PhysicsBody *prev = anch1;
     std::vector<PhysicsBody *> bodies;
     std::vector<Linker *> linkers;
     for (int i = 0; i < n_chains; i++)
     {
-        KinematicBody *b = new KinematicBody(prev->getPosition() + sf::Vector2f(chain_size * 2 + 5, 0), chain_size, sf::Color::Transparent);
+        KinematicBody *b = new KinematicBody(prev->get_position() + sf::Vector2f(chain_size * 2 + 5, 0), chain_size, sf::Color::Transparent);
         Linker *l = new Linker(prev, b, freedom);
         bodies.push_back(b);
         linkers.push_back(l);

@@ -10,9 +10,6 @@
 
 #include "../misc/CSVWriter.hpp"
 
-#define triple_vector std::vector<std::vector<std::vector<int>>>
-#define double_vector std::vector<std::vector<int>>
-
 enum ALGORITHM
 {
     NAIVE,
@@ -62,8 +59,5 @@ private:
     std::vector<PhysicsBody *> m_bodies;
     std::vector<Linker *> m_linkers;
     sf::Texture m_blur;
-
-    int m_gridWidth, m_gridHeight;
-    triple_vector m_grid;
     CSVWriter m_csv;
 };

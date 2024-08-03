@@ -68,7 +68,7 @@ void KinematicBody::wallCollide(int w, int h)
 
 void KinematicBody::resolveCollision(PhysicsBody *target)
 {
-    sf::Vector2f diff = m_pos - target->getPosition();
+    sf::Vector2f diff = m_pos - target->get_position();
     float len_diff = (float)std::sqrt(diff.x * diff.x + diff.y * diff.y);
     float len_r = m_r + target->getRadius();
     float d = len_diff - len_r;
@@ -79,7 +79,7 @@ void KinematicBody::resolveCollision(PhysicsBody *target)
     const float mass_ratio_2 = target->getRadius() / (this->m_r + target->getRadius());
 
     m_pos -= nVec * (d * mass_ratio_1);
-    sf::Vector2f newPos = target->getPosition() + nVec * (d * mass_ratio_2);
+    sf::Vector2f newPos = target->get_position() + nVec * (d * mass_ratio_2);
     setPosition(m_pos);
     target->setPosition(newPos);
 }

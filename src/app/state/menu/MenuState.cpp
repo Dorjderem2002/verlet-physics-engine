@@ -19,12 +19,12 @@ void MenuState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     m_text.setFillColor(sf::Color::White);
     m_text.setCharacterSize(200);
 
-    chain_button = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Chains");
-    blank_button = new Button(50, 200, sf::Color::White, sf::Color::Red, t_font, "Blank");
+    blank_button = new Button(50, 100, sf::Color::White, sf::Color::Red, t_font, "Blank");
+    chain_button = new Button(50, 200, sf::Color::White, sf::Color::Red, t_font, "Chains");
     shapes_button = new Button(50, 300, sf::Color::White, sf::Color::Red, t_font, "Shapes");
     chain_shoot_button = new Button(50, 400, sf::Color::White, sf::Color::Red, t_font, "Chain Shoot");
     truss_button = new Button(50, 500, sf::Color::White, sf::Color::Red, t_font, "Truss");
-    particle_button = new Button(50, 500, sf::Color::White, sf::Color::Red, t_font, "Particle");
+    particle_button = new Button(50, 600, sf::Color::White, sf::Color::Red, t_font, "Particle");
 
     // Physics
     m_world.init();

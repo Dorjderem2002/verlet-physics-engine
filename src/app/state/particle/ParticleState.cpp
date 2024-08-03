@@ -13,20 +13,24 @@ void ParticleState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 
     // Font + m_text
     m_text.setFont(t_font);
-    m_text.setFillColor(sf::Color::White);
+    m_text.setFillColor(sf::Color::Red);
     m_text.setCharacterSize(20);
 
     // Physics
 
-    for (int i = 0; i < 2000; i++)
+    for (int i = 0; i < 5000; i++)
     {
-        KinematicBody *b = new KinematicBody(sf::Vector2f(rand() % 1000, rand() % 1000), rand() % 5 + 1, sf::Color::White);
-        int force = 100000;
+        sf::Vector2f tp(rand() % 1000, rand() % 1000);
+        sf::Color tc(rand() % 255, rand() % 255, rand() % 255, 255);
+        KinematicBody *b = new KinematicBody(tp, rand() % 4 + 3, tc);
+        int force = 1;
         b->accelerate(sf::Vector2f(rand() % force - force / 2, rand() % force - force / 2));
         m_world.add_body(b);
     }
 
-    m_world.algorithm = ALGORITHM::GRID_MULTI;
+    m_world.setSubStep(16);
+    m_world.sections = 128;
+    m_world.algorithm = ALGORITHM::GRID;
     m_world.set_gravity(sf::Vector2f(0, 0));
     m_world.init();
 }
