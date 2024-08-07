@@ -46,6 +46,8 @@ void World::update()
         case ALGORITHM::GRID:
             Collision::resolveCollisionGrid(m_bodies, sections, sf::Vector2f(m_winWidth, m_winHeight));
             break;
+        case ALGORITHM::QUAD:
+            Collision::resolveCollisionQuad(m_bodies, 10, sf::Vector2f(10, 10));
         default:
             Collision::resolveCollisionNaive(m_bodies);
             break;
@@ -123,7 +125,7 @@ void World::controlBody(sf::Vector2f mousePos)
     {
         if (t_body->contains(mousePos))
         {
-            t_body->setPosition(mousePos);
+            t_body->set_position(mousePos);
             break;
         }
     }

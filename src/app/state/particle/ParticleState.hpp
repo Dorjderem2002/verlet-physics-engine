@@ -9,6 +9,7 @@
 #include <physics/World.hpp>
 #include <utils/utils.hpp>
 #include <physics/body/KinematicBody.hpp>
+#include <physics/body/StaticBody.hpp>
 
 class ParticleState : public State
 {
@@ -28,6 +29,9 @@ private:
     sf::Text m_text;
     sf::Clock dtClock;
 
+    //
+    bool follow_without_click = false;
     // PHYSICS
+    StaticBody *mouse_body;
     World m_world;
 };

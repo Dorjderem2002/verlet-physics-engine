@@ -25,6 +25,7 @@ void MenuState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     chain_shoot_button = new Button(50, 400, sf::Color::White, sf::Color::Red, t_font, "Chain Shoot");
     truss_button = new Button(50, 500, sf::Color::White, sf::Color::Red, t_font, "Truss");
     particle_button = new Button(50, 600, sf::Color::White, sf::Color::Red, t_font, "Particle");
+    quad_button = new Button(50, 700, sf::Color::White, sf::Color::Red, t_font, "Quad Particle");
 
     // Physics
     m_world.init();
@@ -69,6 +70,11 @@ void MenuState::update()
         StateManager::curr_state = new ParticleState();
         StateManager::curr_state->init(m_window, *font);
     }
+    if (quad_button->update(m_window))
+    {
+        StateManager::curr_state = new QuadParticleState();
+        StateManager::curr_state->init(m_window, *font);
+    }
 
     move_camera(m_window, m_view);
 }
@@ -87,6 +93,7 @@ void MenuState::draw()
     chain_shoot_button->draw(m_window);
     truss_button->draw(m_window);
     particle_button->draw(m_window);
+    quad_button->draw(m_window);
     m_window->display();
 }
 

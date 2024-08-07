@@ -4,7 +4,7 @@
 
 void PhysicsBody::update(float dt)
 {
-    setPosition(m_pos);
+    set_position(m_pos);
 }
 
 void PhysicsBody::draw(sf::RenderWindow &win)
@@ -35,10 +35,10 @@ void PhysicsBody::resolveCollision(PhysicsBody *target)
     float d = len_diff - len_r;
     sf::Vector2f nVec = diff / len_diff;
     sf::Vector2f newPos = target->get_position() + nVec * (d);
-    target->setPosition(newPos);
+    target->set_position(newPos);
 }
 
-void PhysicsBody::setPosition(sf::Vector2f newPos)
+void PhysicsBody::set_position(sf::Vector2f newPos)
 {
     m_pos = newPos;
     m_shape.setPosition(newPos);

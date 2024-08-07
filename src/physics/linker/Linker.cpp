@@ -16,10 +16,10 @@ void Linker::update()
     dir.y *= diff * 0.5f;
     if (m_body_1->isKinematic())
     {
-        m_body_1->setPosition(m_body_1->get_position() + dir);
+        m_body_1->set_position(m_body_1->get_position() + dir);
     }
     if (m_body_2->isKinematic())
     {
-        m_body_2->setPosition(m_body_2->get_position() - dir);
+        m_body_2->set_position(m_body_2->get_position() - dir);
     }
 }

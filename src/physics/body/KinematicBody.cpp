@@ -34,7 +34,7 @@ void KinematicBody::update(float dt)
     m_pos = m_pos + vel + m_acc * dt * dt;
     m_acc = {};
 
-    setPosition(m_pos);
+    set_position(m_pos);
 }
 
 void KinematicBody::accelerate(sf::Vector2f a)
@@ -80,8 +80,8 @@ void KinematicBody::resolveCollision(PhysicsBody *target)
 
     m_pos -= nVec * (d * mass_ratio_1);
     sf::Vector2f newPos = target->get_position() + nVec * (d * mass_ratio_2);
-    setPosition(m_pos);
-    target->setPosition(newPos);
+    set_position(m_pos);
+    target->set_position(newPos);
 }
 
 void KinematicBody::setVelocity(sf::Vector2f v, float dt)

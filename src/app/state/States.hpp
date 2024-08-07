@@ -5,3 +5,4 @@
 #include "chain_shoot/ChainShooter.hpp"
 #include "truss/TrussState.hpp"
 #include "particle/ParticleState.hpp"
+#include "quad_tree/QuadParticleState.hpp"

@@ -11,7 +11,7 @@ public:
     virtual bool contains(sf::Vector2f loc);
     virtual void wallCollide(int w, int h);
     virtual void resolveCollision(PhysicsBody *target);
-    virtual void setPosition(sf::Vector2f new_pos);
+    virtual void set_position(sf::Vector2f new_pos);
     virtual void set_position_old(sf::Vector2f new_pos);
     virtual void accelerate(sf::Vector2f a);
     virtual void setVelocity(sf::Vector2f v, float dt);

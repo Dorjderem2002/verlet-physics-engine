@@ -24,7 +24,7 @@ StaticBody::StaticBody(sf::Vector2f p, float radius)
     m_shape.setSize(sf::Vector2f(m_r * 2, m_r * 2));
     m_shape.setFillColor(sf::Color::White);
     m_shape.setOrigin(m_r, m_r);
-    setPosition(p);
+    set_position(p);
 }
 
 StaticBody::StaticBody(sf::Vector2f p, float radius, sf::Color t_color)
@@ -34,12 +34,12 @@ StaticBody::StaticBody(sf::Vector2f p, float radius, sf::Color t_color)
     m_shape.setSize(sf::Vector2f(m_r * 2, m_r * 2));
     m_shape.setFillColor(t_color);
     m_shape.setOrigin(m_r, m_r);
-    setPosition(p);
+    set_position(p);
 }
 
 void StaticBody::update(float dt)
 {
-    setPosition(m_pos);
+    set_position(m_pos);
 }
 
 void StaticBody::resolveCollision(PhysicsBody *target)
@@ -50,7 +50,7 @@ void StaticBody::resolveCollision(PhysicsBody *target)
     float d = len_diff - len_r;
     sf::Vector2f nVec = diff / len_diff;
     sf::Vector2f newPos = target->get_position() + nVec * (d);
-    target->setPosition(newPos);
+    target->set_position(newPos);
 }
 
 bool StaticBody::isKinematic()

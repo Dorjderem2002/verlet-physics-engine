@@ -15,7 +15,8 @@ enum ALGORITHM
     NAIVE,
     SORT,
     GRID,
-    GRID_MULTI
+    GRID_MULTI,
+    QUAD
 };
 
 class World

@@ -141,14 +141,24 @@ void Collision::resolveCollisionGrid(std::vector<PhysicsBody *> &bodies, int sec
     for (PhysicsBody *body : bodies)
     {
         float r = body->getRadius();
-        sf::Vector2f p = body->get_position() + sf::Vector2f(r, r);
+        sf::Vector2f p_end = body->get_position() + sf::Vector2f(r, r);
+        sf::Vector2f p_start = body->get_position() - sf::Vector2f(r, r);
         for (int j = 0; j < (int)cells.size(); j++)
         {
-            bool hor = cells[j].x1 <= p.x&& p.x <= cells[j].x2;
-            bool ver = cells[j].y1 <= p.y && p.y <= cells[j].y2;
+            bool hor = cells[j].x1 <= p_end.x && p_end.x <= cells[j].x2;
+            bool ver = cells[j].y1 <= p_end.y && p_end.y <= cells[j].y2;
             if (hor && ver)
             {
                 cells[j].bodies.push_back(body);
+            }
+            else
+            {
+                hor = cells[j].x1 <= p_start.x && p_start.x <= cells[j].x2;
+                ver = cells[j].y1 <= p_start.y && p_start.y <= cells[j].y2;
+                if (hor && ver)
+                {
+                    cells[j].bodies.push_back(body);
+                }
             }
         }
     }
@@ -157,4 +167,9 @@ void Collision::resolveCollisionGrid(std::vector<PhysicsBody *> &bodies, int sec
     {
         resolveCollisionNaive(cells[j].bodies);
     }
+}
+
+void Collision::resolveCollisionQuad(std::vector<PhysicsBody *> &bodies, int c, sf::Vector2f min_size)
+{
+    
 }

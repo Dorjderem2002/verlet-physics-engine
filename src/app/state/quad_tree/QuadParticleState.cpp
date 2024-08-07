@@ -1,10 +1,10 @@
-#include "ParticleState.hpp"
+#include "QuadParticleState.hpp"
 
-ParticleState::ParticleState()
+QuadParticleState::QuadParticleState()
 {
 }
 
-void ParticleState::init(sf::RenderWindow *t_window, sf::Font &t_font)
+void QuadParticleState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 {
     m_window = t_window;
     m_view = sf::View(sf::FloatRect(0, 0, 1000, 1000));
@@ -20,7 +20,7 @@ void ParticleState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 
     // Physics
 
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 100; i++)
     {
         sf::Vector2f tp(rand() % 1000, rand() % 1000);
         sf::Color tc(rand() % 255, rand() % 255, rand() % 255, 255);
@@ -40,7 +40,7 @@ void ParticleState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     m_world.init();
 }
 
-void ParticleState::update()
+void QuadParticleState::update()
 {
     sf::Time deltaTime = dtClock.restart();
     float dt = deltaTime.asSeconds();
@@ -59,12 +59,12 @@ void ParticleState::update()
     move_camera(m_window, m_view);
 }
 
-void ParticleState::fixed_update()
+void QuadParticleState::fixed_update()
 {
     m_world.update();
 }
 
-void ParticleState::draw()
+void QuadParticleState::draw()
 {
     m_window->clear(sf::Color::Black);
     m_world.draw(*m_window);
@@ -72,7 +72,7 @@ void ParticleState::draw()
     m_window->display();
 }
 
-void ParticleState::event(sf::Event ev)
+void QuadParticleState::event(sf::Event ev)
 {
     if (ev.type == sf::Event::Closed)
     {

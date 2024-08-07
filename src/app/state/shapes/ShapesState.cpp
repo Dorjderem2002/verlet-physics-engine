@@ -17,7 +17,7 @@ void ShapesState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     m_text.setCharacterSize(20);
 
     // Physics
-    for (int i = 0; i < 400; i++)
+    for (int i = 0; i < 500; i++)
     {
         square = new KinematicSquare(rand() % 800 + 100, rand() % 800 + 100, 20, 20, 10, sf::Color::Transparent);
         m_world.add_bodies(square->m_bodies, square->m_linkers);
@@ -34,9 +34,9 @@ void ShapesState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     // m_world.add_bodies(t3.m_bodies, t3.m_linkers);
     // m_world.add_body(t4.m_bodies, t4.m_linkers);
 
-    m_world.algorithm = ALGORITHM::NAIVE;
+    m_world.algorithm = ALGORITHM::GRID;
     m_world.draw_lines = true;
-    m_world.setSubStep(20);
+    m_world.setSubStep(30);
     m_world.init();
 }
 
