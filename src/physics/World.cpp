@@ -38,18 +38,18 @@ void World::update()
         switch (algorithm)
         {
         case ALGORITHM::NAIVE:
-            Collision::resolveCollisionNaive(m_bodies);
+            collision.resolveCollisionNaive(m_bodies);
             break;
         case ALGORITHM::SORT:
-            Collision::resolveCollisionSort(m_bodies);
+            collision.resolveCollisionSort(m_bodies);
             break;
         case ALGORITHM::GRID:
-            Collision::resolveCollisionGrid(m_bodies, sections, sf::Vector2f(m_winWidth, m_winHeight));
+            collision.resolveCollisionGrid(m_bodies, sections, sf::Vector2f(m_winWidth, m_winHeight));
             break;
         case ALGORITHM::QUAD:
-            Collision::resolveCollisionQuad(m_bodies, 10, sf::Vector2f(10, 10));
+            collision.resolveCollisionQuad(m_bodies, 10, sf::Vector2f(10, 10));
         default:
-            Collision::resolveCollisionNaive(m_bodies);
+            collision.resolveCollisionNaive(m_bodies);
             break;
         }
     }
@@ -87,7 +87,10 @@ void World::applyConstraint()
 void World::draw(sf::RenderWindow &window)
 {
     sf::VertexArray vertices = generate_vertices(m_bodies, m_blur);
-    window.draw(vertices, &m_blur);
+    if (draw_grid)
+    {
+        collision.draw_cells(&window);
+    }
     if (draw_lines)
     {
         for (int i = 0; i < (int)m_linkers.size(); i++)
@@ -102,6 +105,8 @@ void World::draw(sf::RenderWindow &window)
             window.draw(l1, 2, sf::Lines);
         }
     }
+    window.draw(vertices, &m_blur);
+
     // old slow code
     // for (PhysicsBody *b : m_bodies)
     // {

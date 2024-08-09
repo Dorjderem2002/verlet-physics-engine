@@ -1,26 +1,8 @@
 #include "Collision.hpp"
-
 #include <iostream>
 
-struct Cell
+Collision::Collision()
 {
-    // inclusive
-    int x1;
-    int x2;
-    int y1;
-    int y2;
-    std::vector<PhysicsBody *> bodies;
-};
-
-bool intersect(float x1, float x2, float y1, float y2)
-{
-    float a = std::max(x1, y1);
-    float b = std::min(x2, y2);
-    if (a > b)
-    {
-        return false;
-    }
-    return true;
 }
 
 void Collision::resolveCollisionSort(std::vector<PhysicsBody *> &bodies)
@@ -104,8 +86,8 @@ void Collision::resolveCollisionNaive(std::vector<PhysicsBody *> &bodies)
 void Collision::resolveCollisionGrid(std::vector<PhysicsBody *> &bodies, int sections, sf::Vector2f w_size)
 {
     int sec_left = sections - 1;
-    std::vector<Cell> cells;
-    cells.push_back(Cell{0, (int)w_size.x, 0, (int)w_size.y, std::vector<PhysicsBody *>()});
+    cells.clear();
+    cells.push_back(Cell(0, (int)w_size.x, 0, (int)w_size.y));
 
     while (sec_left--)
     {
@@ -125,14 +107,14 @@ void Collision::resolveCollisionGrid(std::vector<PhysicsBody *> &bodies, int sec
         if (abs(c.x2 - c.x1) >= abs(c.y2 - c.y1))
         {
             int mid = std::min(c.x1, c.x2) + abs(c.x2 - c.x1) / 2;
-            a = {std::min(c.x1, c.x2), mid, c.y1, c.y2, std::vector<PhysicsBody *>()};
-            b = {mid, std::max(c.x1, c.x2), c.y1, c.y2, std::vector<PhysicsBody *>()};
+            a = {std::min(c.x1, c.x2), mid, c.y1, c.y2};
+            b = {mid, std::max(c.x1, c.x2), c.y1, c.y2};
         }
         else
         {
             int mid = std::min(c.y1, c.y2) + abs(c.y2 - c.y1) / 2;
-            a = {c.x1, c.x2, std::min(c.y1, c.y2), mid, std::vector<PhysicsBody *>()};
-            b = {c.x1, c.x2, mid, std::max(c.y1, c.y2), std::vector<PhysicsBody *>()};
+            a = {c.x1, c.x2, std::min(c.y1, c.y2), mid};
+            b = {c.x1, c.x2, mid, std::max(c.y1, c.y2)};
         }
         cells.push_back(a);
         cells.push_back(b);
@@ -140,25 +122,11 @@ void Collision::resolveCollisionGrid(std::vector<PhysicsBody *> &bodies, int sec
 
     for (PhysicsBody *body : bodies)
     {
-        float r = body->getRadius();
-        sf::Vector2f p_end = body->get_position() + sf::Vector2f(r, r);
-        sf::Vector2f p_start = body->get_position() - sf::Vector2f(r, r);
         for (int j = 0; j < (int)cells.size(); j++)
         {
-            bool hor = cells[j].x1 <= p_end.x && p_end.x <= cells[j].x2;
-            bool ver = cells[j].y1 <= p_end.y && p_end.y <= cells[j].y2;
-            if (hor && ver)
+            if (cells[j].contain_circle(body))
             {
                 cells[j].bodies.push_back(body);
-            }
-            else
-            {
-                hor = cells[j].x1 <= p_start.x && p_start.x <= cells[j].x2;
-                ver = cells[j].y1 <= p_start.y && p_start.y <= cells[j].y2;
-                if (hor && ver)
-                {
-                    cells[j].bodies.push_back(body);
-                }
             }
         }
     }
@@ -171,5 +139,12 @@ void Collision::resolveCollisionGrid(std::vector<PhysicsBody *> &bodies, int sec
 
 void Collision::resolveCollisionQuad(std::vector<PhysicsBody *> &bodies, int c, sf::Vector2f min_size)
 {
-    
+}
+
+void Collision::draw_cells(sf::RenderWindow *window)
+{
+    for (auto i : cells)
+    {
+        window->draw(i.shape);
+    }
 }

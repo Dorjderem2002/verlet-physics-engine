@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include "../body/KinematicBody.hpp"
 #include "../body/PhysicsBody.hpp"

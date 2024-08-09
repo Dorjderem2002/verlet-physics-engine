@@ -49,6 +49,8 @@ public:
     sf::Vector2f m_shooterPos = sf::Vector2f(500, 200);
     bool genBodies = false;
     bool draw_lines = true;
+    Collision collision;
+    bool draw_grid = false;
 
 private:
     int m_winWidth = 1000;

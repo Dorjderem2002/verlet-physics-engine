@@ -34,8 +34,9 @@ void ParticleState::init(sf::RenderWindow *t_window, sf::Font &t_font)
     m_world.add_body(mouse_body);
 
     m_world.setSubStep(50);
-    m_world.sections = 128;
+    m_world.sections = 16;
     m_world.algorithm = ALGORITHM::GRID;
+    m_world.draw_grid = true;
     m_world.set_gravity(sf::Vector2f(0, 0));
     m_world.init();
 }
