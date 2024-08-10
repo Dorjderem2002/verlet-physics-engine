@@ -47,7 +47,7 @@ void World::update()
             collision.resolveCollisionGrid(m_bodies, sections, sf::Vector2f(m_winWidth, m_winHeight));
             break;
         case ALGORITHM::QUAD:
-            collision.resolveCollisionQuad(m_bodies, 10, sf::Vector2f(10, 10));
+            collision.resolveCollisionQuad(m_bodies, 10, 200, sf::Vector2f(m_winWidth, m_winHeight));
         default:
             collision.resolveCollisionNaive(m_bodies);
             break;

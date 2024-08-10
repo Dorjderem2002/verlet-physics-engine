@@ -37,6 +37,7 @@
 
 ![Boxed](images/boxes.png)
 ![Chain](images/long_chain.png)
+![Quad](images/quad.png)
 
 I love high performance computing so I chose to build physics engine using C++. The project touched various algorithms with many pros and cons. I also get a chance to write multithreading to improve performance. Below is the algorithms I have implemented so far for collision detection.
 

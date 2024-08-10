@@ -137,8 +137,14 @@ void Collision::resolveCollisionGrid(std::vector<PhysicsBody *> &bodies, int sec
     }
 }
 
-void Collision::resolveCollisionQuad(std::vector<PhysicsBody *> &bodies, int c, sf::Vector2f min_size)
+void Collision::resolveCollisionQuad(std::vector<PhysicsBody *> &bodies, int c, float area, sf::Vector2f w_size)
 {
+    QuadTree qt(sf::FloatRect(0, 0, w_size.x, w_size.y), bodies, c, area);
+    cells = qt.generate();
+    for (int j = 0; j < (int)cells.size(); j++)
+    {
+        resolveCollisionNaive(cells[j].bodies);
+    }
 }
 
 void Collision::draw_cells(sf::RenderWindow *window)

@@ -24,9 +24,7 @@ public:
 class QuadTree : Cell
 {
 public:
-    QuadTree(std::vector<PhysicsBody *> bodies);
-
-private:
-    int capacity;
-    float min_area;
+    QuadTree(sf::FloatRect f, std::vector<PhysicsBody *> &bodies, int capacity, float area);
+    std::vector<QuadTree *> cells;
+    std::vector<Cell> generate();
 };

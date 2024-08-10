@@ -20,11 +20,11 @@ void QuadParticleState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 
     // Physics
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 500; i++)
     {
         sf::Vector2f tp(rand() % 1000, rand() % 1000);
         sf::Color tc(rand() % 255, rand() % 255, rand() % 255, 255);
-        KinematicBody *b = new KinematicBody(tp, rand() % 40 + 3, sf::Color::Blue);
+        KinematicBody *b = new KinematicBody(tp, rand() % 20 + 3, sf::Color::Blue);
         int force = 10;
         b->accelerate(sf::Vector2f(rand() % force - force / 2, rand() % force - force / 2));
         m_world.add_body(b);
@@ -35,7 +35,7 @@ void QuadParticleState::init(sf::RenderWindow *t_window, sf::Font &t_font)
 
     m_world.setSubStep(50);
     m_world.sections = 256;
-    m_world.algorithm = ALGORITHM::GRID;
+    m_world.algorithm = ALGORITHM::QUAD;
     m_world.draw_grid = true;
     m_world.set_gravity(sf::Vector2f(0, 0));
     m_world.init();

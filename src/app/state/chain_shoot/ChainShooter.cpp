@@ -41,6 +41,9 @@ void ChainShooter::init(sf::RenderWindow *t_window, sf::Font &t_font)
     linkers.push_back(final);
     m_world.add_bodies(bodies, linkers);
 
+    m_world.algorithm = ALGORITHM::QUAD;
+    m_world.sections = 16;
+    m_world.draw_grid = true;
     m_world.setSubStep(10);
     m_world.init();
 }
