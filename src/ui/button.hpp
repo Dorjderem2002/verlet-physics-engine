@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 class Button
 {
@@ -20,33 +21,36 @@ public:
         text.setPosition(shape.getPosition().x + (shape.getSize().x - text.getLocalBounds().width) / 2, shape.getPosition().y + (shape.getSize().y - text.getLocalBounds().height) / 2);
     }
 
-    void draw(sf::RenderWindow *window)
+    void draw(std::weak_ptr<sf::RenderWindow> window)
     {
-        window->draw(shape);
-        window->draw(text);
+        if (!window.expired())
+        {
+            window.lock()->draw(shape);
+            window.lock()->draw(text);
+        }
     }
 
-    bool isMouseOver(sf::RenderWindow *window)
+    bool isMouseOver(std::weak_ptr<sf::RenderWindow> window)
     {
-        sf::Vector2i mouse_pos = sf::Mouse::getPosition(*window);
-        sf::IntRect button_rect(shape.getPosition().x, shape.getPosition().y, shape.getSize().x, shape.getSize().y);
-        sf::Vector2f mapped_mouse_pos = window->mapPixelToCoords(mouse_pos, window->getView());
-
-        return button_rect.contains(mapped_mouse_pos.x, mapped_mouse_pos.y);
+        if (!window.expired())
+        {
+            sf::Vector2i mouse_pos = sf::Mouse::getPosition(*(window.lock()));
+            sf::IntRect button_rect(shape.getPosition().x, shape.getPosition().y, shape.getSize().x, shape.getSize().y);
+            sf::Vector2f mapped_mouse_pos = window.lock()->mapPixelToCoords(mouse_pos, window.lock()->getView());
+            return button_rect.contains(mapped_mouse_pos.x, mapped_mouse_pos.y);
+        }
+        return false;
     }
 
-    bool update(sf::RenderWindow *window)
+    bool update(std::weak_ptr<sf::RenderWindow> window)
     {
-        if (isMouseOver(window) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        if (!window.expired() && isMouseOver(window) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             shape.setFillColor(hoverColor);
             return true;
         }
-        else
-        {
-            shape.setFillColor(idleColor);
-            return false;
-        }
+        shape.setFillColor(idleColor);
+        return false;
     }
 
 private:

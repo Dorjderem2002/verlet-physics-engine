@@ -1,5 +1,6 @@
 #pragma once
 #include "state/state/State.hpp"
+#include <memory>
 
 class StateManager
 {

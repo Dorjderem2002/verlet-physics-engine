@@ -26,7 +26,7 @@ void App::run()
 void App::init(int w_size, int h_size)
 {
     // settings.antialiasingLevel = 16.0;
-    window = new sf::RenderWindow(sf::VideoMode(w_size, h_size), "Physics Engine", sf::Style::Default, settings);
+    window = std::make_shared<sf::RenderWindow>(sf::VideoMode(w_size, h_size), "Physics Engine", sf::Style::Default, settings);
     window->setFramerateLimit(60);
 
     // Font + Text

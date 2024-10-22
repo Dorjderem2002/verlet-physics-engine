@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "utils.hpp"
 
-void move_camera(sf::RenderWindow *m_window, sf::View &m_view)
+void move_camera(std::shared_ptr<sf::RenderWindow> m_window, sf::View &m_view)
 {
     float cameraSpeed = 50;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -26,7 +26,7 @@ void move_camera(sf::RenderWindow *m_window, sf::View &m_view)
     }
 }
 
-void draw_line(sf::RenderWindow *m_window, sf::Vector2f a, sf::Vector2f b)
+void draw_line(std::shared_ptr<sf::RenderWindow> m_window, sf::Vector2f a, sf::Vector2f b)
 {
     sf::Vertex line[2] = {sf::Vertex(a), sf::Vertex(b)};
 

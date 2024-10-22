@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstring>
 #include <iostream>
+#include <memory>
 
 #include "state/state/State.hpp"
 
@@ -21,7 +22,7 @@ public:
 private:
     // SFML
     sf::ContextSettings settings;
-    sf::RenderWindow *window;
+    std::shared_ptr<sf::RenderWindow> window;
     sf::Font font;
     sf::Clock dtClock;
 };

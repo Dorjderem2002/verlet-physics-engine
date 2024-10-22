@@ -15,7 +15,7 @@ class QuadParticleState : public State
 {
 public:
     QuadParticleState();
-    void init(sf::RenderWindow *t_window, sf::Font &t_font) override;
+    void init(std::shared_ptr<sf::RenderWindow> t_window, sf::Font &t_font) override;
     void update() override;
     void fixed_update() override;
     void draw() override;
@@ -24,7 +24,7 @@ public:
 private:
     // SFML
     sf::ContextSettings m_settings;
-    sf::RenderWindow *m_window;
+    std::shared_ptr<sf::RenderWindow> m_window;
     sf::View m_view;
     sf::Text m_text;
     sf::Clock dtClock;

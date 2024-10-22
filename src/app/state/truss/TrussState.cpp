@@ -4,7 +4,7 @@ TrussState::TrussState()
 {
 }
 
-void TrussState::init(sf::RenderWindow *t_window, sf::Font &t_font)
+void TrussState::init(std::shared_ptr<sf::RenderWindow>t_window, sf::Font &t_font)
 {
     m_window = t_window;
     m_view = sf::View(sf::FloatRect(0, 0, 1000, 1000));
