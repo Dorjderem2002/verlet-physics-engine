@@ -31,4 +31,7 @@ private:
 
     // PHYSICS
     World m_world;
+
+    std::vector<Linker *> linkers;
+    std::vector<PhysicsBody *> bodies;
 };

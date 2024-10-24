@@ -17,9 +17,9 @@ void ShapesState::init(std::shared_ptr<sf::RenderWindow> t_window, sf::Font &t_f
     m_text.setCharacterSize(20);
 
     // Physics
-    for (int i = 0; i < 500; i++)
+    for (int i = 0; i < 30; i++)
     {
-        square = new KinematicSquare(rand() % 800 + 100, rand() % 800 + 100, 20, 20, 10, sf::Color::Transparent);
+        square = new KinematicSquare(i * 30 + 100, 100, 20, 20, 10, sf::Color::White);
         m_world.add_bodies(square->m_bodies, square->m_linkers);
     }
     // KinematicSquare square(600, 100, 30, 30, 10);

@@ -31,31 +31,35 @@ void World::update()
 
     m_counter += m_frame_dt;
     m_t += 0.001f;
+
     for (int i = 0; i < m_sub_steps; i++)
     {
         applyGravity();
         applyConstraint();
-        switch (algorithm)
+        if (b2b_collision)
         {
-        case ALGORITHM::NAIVE:
-            collision.resolveCollisionNaive(m_bodies);
-            break;
-        case ALGORITHM::SORT:
-            collision.resolveCollisionSort(m_bodies);
-            break;
-        case ALGORITHM::GRID:
-            collision.resolveCollisionGrid(m_bodies, sections, sf::Vector2f(m_winWidth, m_winHeight));
-            break;
-        case ALGORITHM::QUAD:
-            collision.resolveCollisionQuad(m_bodies, 10, 200, sf::Vector2f(m_winWidth, m_winHeight));
-        default:
-            collision.resolveCollisionNaive(m_bodies);
-            break;
+            switch (algorithm)
+            {
+            case ALGORITHM::NAIVE:
+                collision.resolveCollisionNaive(m_bodies);
+                break;
+            case ALGORITHM::SORT:
+                collision.resolveCollisionSort(m_bodies);
+                break;
+            case ALGORITHM::GRID:
+                collision.resolveCollisionGrid(m_bodies, sections, sf::Vector2f(m_winWidth, m_winHeight));
+                break;
+            case ALGORITHM::QUAD:
+                collision.resolveCollisionQuad(m_bodies, 10, 200, sf::Vector2f(m_winWidth, m_winHeight));
+            default:
+                collision.resolveCollisionNaive(m_bodies);
+                break;
+            }
         }
-    }
-    for (Linker *i_linker : m_linkers)
-    {
-        i_linker->update();
+        for (Linker *i_linker : m_linkers)
+        {
+            i_linker->update();
+        }
     }
     updatePosition(sub_dt);
 }
@@ -151,6 +155,12 @@ void World::add_bodies(std::vector<PhysicsBody *> &t_bodies, std::vector<Linker 
 void World::add_body(PhysicsBody *t_body)
 {
     m_bodies.push_back(t_body);
+}
+
+void World::erase_linker(Linker *t_linker)
+{
+    auto it = find(m_linkers.begin(), m_linkers.end(), t_linker);
+    m_linkers.erase(it);
 }
 
 void World::add_linker(Linker *t_linker)

@@ -38,6 +38,7 @@ public:
     void controlBody(sf::Vector2f mousePos);
     void add_bodies(std::vector<PhysicsBody *> &t_bodies, std::vector<Linker *> &t_linkers);
     void add_body(PhysicsBody *t_body);
+    void erase_linker(Linker *t_linker);
     void add_linker(Linker *t_linker);
 
 public:
@@ -51,6 +52,7 @@ public:
     bool draw_lines = true;
     Collision collision;
     bool draw_grid = false;
+    bool b2b_collision = true;
 
 private:
     int m_winWidth = 1000;

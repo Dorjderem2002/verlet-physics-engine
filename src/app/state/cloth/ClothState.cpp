@@ -16,17 +16,16 @@ void ClothState::init(std::shared_ptr<sf::RenderWindow> t_window, sf::Font &t_fo
     m_text.setFillColor(sf::Color::White);
     m_text.setCharacterSize(20);
 
-    int n = 19, m = 19;
-    const sf::Vector2f p_offset = {100.0f, 100.0f};
+    int n = 40, m = 48;
+    const sf::Vector2f p_offset = {10.0f, 10.0f};
 
-    constexpr float rad = 5, p_dist = 5;
-    std::vector<PhysicsBody *> bodies;
+    constexpr float rad = 4, p_dist = 5;
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
         {
             sf::Vector2f pos = sf::Vector2f(j * rad * p_dist, i * rad * p_dist) + p_offset;
-            if (i == 0 && j % 2 == 0)
+            if (i == 0 && (j % 10 == 0))
             {
                 bodies.push_back(new StaticBody(pos, rad));
             }
@@ -36,7 +35,6 @@ void ClothState::init(std::shared_ptr<sf::RenderWindow> t_window, sf::Font &t_fo
             }
         }
     }
-    std::vector<Linker *> linkers;
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
@@ -44,12 +42,12 @@ void ClothState::init(std::shared_ptr<sf::RenderWindow> t_window, sf::Font &t_fo
             if (j + 1 < m)
             {
                 Linker *link = new Linker(bodies[i * m + j], bodies[i * m + j + 1], rad * p_dist);
-                m_world.add_linker(link);
+                linkers.push_back(link);
             }
             if (i + 1 < n)
             {
-                Linker *link = new Linker(bodies[i * m + j], bodies[i * m + j + n], rad * p_dist);
-                m_world.add_linker(link);
+                Linker *link = new Linker(bodies[i * m + j], bodies[i * m + j + m], rad * p_dist);
+                linkers.push_back(link);
             }
         }
     }
@@ -58,9 +56,10 @@ void ClothState::init(std::shared_ptr<sf::RenderWindow> t_window, sf::Font &t_fo
     // Physics
     m_world.init();
     m_world.sections = 256;
-    m_world.setSubStep(50);
+    m_world.setSubStep(6);
     m_world.algorithm = ALGORITHM::QUAD;
-    m_world.draw_grid = true;
+    m_world.b2b_collision = false;
+    // m_world.draw_grid = true;
 }
 
 void ClothState::update()
@@ -71,7 +70,30 @@ void ClothState::update()
 
     int bCount = m_world.getBodyCount();
     m_text.setString("FPS: " + std::to_string(fps) + "\nBody count: " + std::to_string(bCount));
-    
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    {
+        sf::Vector2i pixelPos = sf::Mouse::getPosition(*m_window);
+        sf::Vector2f m_worldPos = m_window->mapPixelToCoords(pixelPos);
+
+        for (PhysicsBody *b : bodies)
+        {
+            if (b->contains(m_worldPos))
+            {
+                for (Linker *l : linkers)
+                {
+                    if (l->m_body_2 == b || l->m_body_1 == b)
+                    {
+                        m_world.erase_linker(l);
+                        auto it = find(linkers.begin(), linkers.end(), l);
+                        linkers.erase(it);
+                        delete l;
+                        break;
+                    }
+                }
+            }
+        }
+    }
     move_camera(m_window, m_view);
 }
 
