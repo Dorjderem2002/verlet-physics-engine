@@ -21,7 +21,9 @@ public:
     virtual float getRadius();
     virtual bool isKinematic();
     virtual sf::Color getColor();
-    void set_texture(sf::Texture* t);
+    void set_texture(sf::Texture *t);
+
+    virtual ~PhysicsBody() {};
 
 protected:
     sf::RectangleShape m_shape;

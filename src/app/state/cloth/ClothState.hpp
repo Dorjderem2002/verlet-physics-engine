@@ -7,14 +7,14 @@
 
 #include "../state/State.hpp"
 #include <physics/World.hpp>
+#include <physics/body/KinematicBody.hpp>
+#include <physics/body/StaticBody.hpp>
 #include <utils/utils.hpp>
-#include <ui/button.hpp>
-#include <memory>
 
-class MenuState : public State
+class ClothState : public State
 {
 public:
-    MenuState();
+    ClothState();
     void init(std::shared_ptr<sf::RenderWindow> t_window, sf::Font &t_font) override;
     void update() override;
     void fixed_update() override;
@@ -28,17 +28,6 @@ private:
     sf::View m_view;
     sf::Text m_text;
     sf::Clock dtClock;
-    sf::Font *font;
-
-    // UI
-    Button *chain_button;
-    Button *blank_button;
-    Button *shapes_button;
-    Button *chain_shoot_button;
-    Button *truss_button;
-    Button *particle_button;
-    Button *quad_button;
-    Button *cloth_button;
 
     // PHYSICS
     World m_world;

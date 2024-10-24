@@ -26,6 +26,7 @@ void MenuState::init(std::shared_ptr<sf::RenderWindow> t_window, sf::Font &t_fon
     truss_button = new Button(50, 500, sf::Color::White, sf::Color::Red, t_font, "Truss");
     particle_button = new Button(50, 600, sf::Color::White, sf::Color::Red, t_font, "Particle");
     quad_button = new Button(50, 700, sf::Color::White, sf::Color::Red, t_font, "Quad Particle");
+    cloth_button = new Button(50, 800, sf::Color::White, sf::Color::Red, t_font, "Cloth");
 
     // Physics
     m_world.init();
@@ -75,6 +76,11 @@ void MenuState::update()
         StateManager::curr_state = new QuadParticleState();
         StateManager::curr_state->init(m_window, *font);
     }
+    if (cloth_button->update(m_window))
+    {
+        StateManager::curr_state = new ClothState();
+        StateManager::curr_state->init(m_window, *font);
+    }
 
     move_camera(m_window, m_view);
 }
@@ -94,6 +100,7 @@ void MenuState::draw()
     truss_button->draw(m_window);
     particle_button->draw(m_window);
     quad_button->draw(m_window);
+    cloth_button->draw(m_window);
     m_window->display();
 }
 

@@ -38,6 +38,7 @@
 ![Boxed](images/boxes.png)
 ![Chain](images/long_chain.png)
 ![Quad](images/quad.png)
+![Cloth](images/cloth.png)
 
 I love high performance computing so I chose to build physics engine using C++. The project touched various algorithms with many pros and cons. I also get a chance to write multithreading to improve performance. Below is the algorithms I have implemented so far for collision detection.
 
@@ -93,9 +94,10 @@ Below is an example of how you can instruct your audience on installing and sett
 - [x] Chain
 - [x] Force
 - [x] More shapes using circles
-- [ ] Quad Tree Optimization
+- [x] Quad Tree Optimization
 - [ ] Trusses
 - [ ] Soft Body
+- [x] Cloth
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
 

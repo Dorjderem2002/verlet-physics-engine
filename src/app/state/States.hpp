@@ -8,3 +8,4 @@
 #include "truss/TrussState.hpp"
 #include "particle/ParticleState.hpp"
 #include "quad_tree/QuadParticleState.hpp"
+#include "cloth/ClothState.hpp"
